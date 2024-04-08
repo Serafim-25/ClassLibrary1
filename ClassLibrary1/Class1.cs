@@ -9,8 +9,5 @@ namespace ClassLibrary1
     public class Class1
     {
         string x = "sdjvljfnv";
-
-        string x = "sdjv234436nv";
-
     }
 }
