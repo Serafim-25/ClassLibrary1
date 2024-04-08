@@ -10,5 +10,6 @@ namespace ClassLibrary1
     {
         string x = "sdjvljfnv";
         string y = "Help   me";
+        int t = 123;
     }
 }
