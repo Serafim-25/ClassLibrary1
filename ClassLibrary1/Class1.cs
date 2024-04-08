@@ -11,5 +11,6 @@ namespace ClassLibrary1
         string x = "sdjvljfnv";
         string x = "sdjvljfnv";
         string y = "Help   me";
+        string z = "Hello";
     }
 }
