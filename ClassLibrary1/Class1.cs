@@ -10,5 +10,7 @@ namespace ClassLibrary1
     {
         string x = "sdjvljfnv";
 
+        string x = "sdjv234436nv";
+
     }
 }
