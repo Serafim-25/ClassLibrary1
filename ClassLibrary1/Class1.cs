@@ -13,5 +13,6 @@ namespace ClassLibrary1
         string y = "Help   me";
         string z = "Hello";
         int t = 123;
+        long l = 1L;
     }
 }
