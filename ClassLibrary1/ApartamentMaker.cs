@@ -26,70 +26,73 @@ namespace ClassLibrary1
             Guid guidNumberApartment = new Guid("77f09e29-8873-4223-bdd9-4c9050cf18a4");// guid Кврт.НомерКвартиры
             int currentNumberApartment = 1;
             const int numberNonResidentialPremises = 5;
-            using (Transaction transaction = new Transaction(document))
-            {
-                transaction.Start("Safety transaction");
+
                 for (int j = 0; j < level.Count; j++)
                 {
-                    List<FamilyInstance> windows = new FilteredElementCollector(document).OfClass(typeof(FamilyInstance)).OfCategory(BuiltInCategory.OST_Windows).Cast<FamilyInstance>().Where(it => it.LevelId.Equals(level[j].Id) && it.ToRoom != null && it.FromRoom != null).ToList();
-                    List<FamilyInstance> doors = new FilteredElementCollector(document).OfClass(typeof(FamilyInstance)).OfCategory(BuiltInCategory.OST_Doors).Cast<FamilyInstance>().Where(it => it.LevelId.Equals(level[j].Id) && it.ToRoom != null && it.FromRoom != null).ToList();
-                    List<FamilyInstance> opening = new List<FamilyInstance>();
-                    opening.AddRange(windows);
-                    opening.AddRange(doors);
-                    List<SpatialElement> rooms = new FilteredElementCollector(document).OfClass(typeof(SpatialElement)).Cast<SpatialElement>().Where(it => it.Level.Id.Equals(level[j].Id)).ToList();
+                    using (Transaction transaction = new Transaction(document))
+                    {
+                        transaction.Start("Safety transaction");
+                        List<FamilyInstance> windows = new FilteredElementCollector(document).OfClass(typeof(FamilyInstance)).OfCategory(BuiltInCategory.OST_Windows).Cast<FamilyInstance>().Where(it => it.LevelId.Equals(level[j].Id) && it.ToRoom != null && it.FromRoom != null).ToList();
+                        List<FamilyInstance> doors = new FilteredElementCollector(document).OfClass(typeof(FamilyInstance)).OfCategory(BuiltInCategory.OST_Doors).Cast<FamilyInstance>().Where(it => it.LevelId.Equals(level[j].Id) && it.ToRoom != null && it.FromRoom != null).ToList();
+                        List<FamilyInstance> opening = new List<FamilyInstance>();
+                        opening.AddRange(windows);
+                        opening.AddRange(doors);
+                        List<SpatialElement> rooms = new FilteredElementCollector(document).OfClass(typeof(SpatialElement)).Cast<SpatialElement>().Where(it => it.Level.Id.Equals(level[j].Id)).ToList();
 
-                    //TaskDialog.Show("Заголовок. Двери и Комнаты", doors.Count.ToString() + "\n" + rooms.Count.ToString());
-                    Dictionary<double, Parameter[]> roomsDict = new Dictionary<double, Parameter[]>();
-                    for (int i = 0; i < rooms.Count; i++)
-                    {
-                        ParameterSet parameterSet = rooms[i].Parameters;
-                        Parameter roomType = null;
-                        Parameter apartmentNumber = null;
-                        foreach (Parameter para in parameterSet)
+                        //TaskDialog.Show("Заголовок. Двери и Комнаты", doors.Count.ToString() + "\n" + rooms.Count.ToString());
+                        Dictionary<ElementId, Parameter[]> roomsDict = new Dictionary<ElementId, Parameter[]>();
+                        for (int i = 0; i < rooms.Count; i++)
                         {
-                            if (para.IsShared && para.GUID == guidNumberApartment) { apartmentNumber = para; }
-                            if (para.IsShared && para.GUID == guidPlaceType) { roomType = para; }
-                        }
-                        roomsDict.Add((rooms[i].Location as LocationPoint).Point.X, new Parameter[] { roomType, apartmentNumber });
-                    }
-                    try
-                    {
-                        for (int u = 0; u < rooms.Count; u++)
-                        {
-                            if (roomsDict[(rooms[u].Location as LocationPoint).Point.X][0].AsInteger() != numberNonResidentialPremises && roomsDict[(rooms[u].Location as LocationPoint).Point.X][1].AsString() == "-1")
+                            ParameterSet parameterSet = rooms[i].Parameters;
+                            Parameter roomType = null;
+                            Parameter apartmentNumber = null;
+                            foreach (Parameter para in parameterSet)
                             {
-                                roomsDict[(rooms[u].Location as LocationPoint).Point.X][1].Set("Кв." + currentNumberApartment.ToString());
-
-                                for (int t = 0; t < opening.Count; t++)
-                                {
-                                    if (roomsDict.ContainsKey((opening[t].ToRoom.Location as LocationPoint).Point.X))
-                                    {
-                                        if (roomsDict[(opening[t].FromRoom.Location as LocationPoint).Point.X][0].AsInteger() != numberNonResidentialPremises)
-                                        {
-                                            roomsDict[(opening[t].FromRoom.Location as LocationPoint).Point.X][1].Set("Кв." + currentNumberApartment.ToString());
-                                        }
-                                    }
-                                    else if (roomsDict.ContainsKey((opening[t].FromRoom.Location as LocationPoint).Point.X))
-                                    {
-                                        if (roomsDict[(opening[t].ToRoom.Location as LocationPoint).Point.X][0].AsInteger() != numberNonResidentialPremises)
-                                        {
-                                            roomsDict[(opening[t].ToRoom.Location as LocationPoint).Point.X][1].Set("Кв." + currentNumberApartment.ToString());
-                                        }
-                                    }
-                                }
-                                currentNumberApartment += 1;
+                                if (para.IsShared && para.GUID == guidNumberApartment) { apartmentNumber = para; }
+                                else if (para.IsShared && para.GUID == guidPlaceType) { roomType = para; }
                             }
-                            
+                            roomsDict.Add(rooms[i].Id, new Parameter[] { roomType, apartmentNumber });
                         }
-                    }
-                    catch (Exception e)
-                    {
-                        TaskDialog.Show("Исключение", e.Message);
-                        continue;
+                        try
+                        {
+
+                            for (int u = 0; u < rooms.Count; u++)
+                            {
+                                if (roomsDict[rooms[u].Id][0].AsInteger() != numberNonResidentialPremises && roomsDict[rooms[u].Id][1].AsString() == "-1")
+                                {
+                                    roomsDict[rooms[u].Id][1].Set("Кв." + currentNumberApartment.ToString());
+
+                                    for (int t = 0; t < opening.Count; t++)
+                                    {
+                                        if (roomsDict[opening[t].ToRoom.Id][1].AsString() == "Кв." + currentNumberApartment.ToString())
+                                        {
+                                            if (roomsDict[opening[t].FromRoom.Id][0].AsInteger() != numberNonResidentialPremises && (roomsDict[opening[t].FromRoom.Id][1].AsString() != "Кв." + currentNumberApartment.ToString()))
+                                            {
+                                                roomsDict[opening[t].FromRoom.Id][1].Set("Кв." + currentNumberApartment.ToString());
+                                                t = 0;
+                                            }
+                                        }
+                                        else if (roomsDict[opening[t].FromRoom.Id][1].AsString() == "Кв." + currentNumberApartment.ToString())
+                                        {
+                                            if (roomsDict[opening[t].ToRoom.Id][0].AsInteger() != numberNonResidentialPremises && (roomsDict[opening[t].ToRoom.Id][1].AsString() != "Кв." + currentNumberApartment.ToString()))
+                                            {
+                                                roomsDict[opening[t].ToRoom.Id][1].Set("Кв." + currentNumberApartment.ToString());
+                                                t = 0;
+                                            }
+                                        }
+                                    }
+                                    currentNumberApartment += 1;
+                                }
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            TaskDialog.Show("Исключение", e.Message);
+                            continue;
+                        }
+                        transaction.Commit();
                     }
                 }
-                transaction.Commit();
-            }
             return Result.Succeeded;
         }
     }
