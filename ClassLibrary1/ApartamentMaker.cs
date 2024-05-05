@@ -18,7 +18,7 @@ namespace ClassLibrary1
         {
             UIDocument uIDocument = commandData.Application.ActiveUIDocument;
             Document document = uIDocument.Document;
-            //TaskDialog.Show("Заголовок", "Начало команды");
+
             List<Level> level = new FilteredElementCollector(document).OfClass(typeof(Level)).OfCategory(BuiltInCategory.OST_Levels).Cast<Level>().ToList();
             //TaskDialog.Show("Заголовок. Количество уровней", level.Count.ToString());
 
@@ -38,9 +38,8 @@ namespace ClassLibrary1
                         opening.AddRange(windows);
                         opening.AddRange(doors);
                         List<SpatialElement> rooms = new FilteredElementCollector(document).OfClass(typeof(SpatialElement)).Cast<SpatialElement>().Where(it => it.Level.Id.Equals(level[j].Id)).ToList();
-
-                        //TaskDialog.Show("Заголовок. Двери и Комнаты", doors.Count.ToString() + "\n" + rooms.Count.ToString());
                         Dictionary<ElementId, Parameter[]> roomsDict = new Dictionary<ElementId, Parameter[]>();
+
                         for (int i = 0; i < rooms.Count; i++)
                         {
                             ParameterSet parameterSet = rooms[i].Parameters;
@@ -58,7 +57,7 @@ namespace ClassLibrary1
 
                             for (int u = 0; u < rooms.Count; u++)
                             {
-                                if (roomsDict[rooms[u].Id][0].AsInteger() != numberNonResidentialPremises && roomsDict[rooms[u].Id][1].AsString() == "-1")
+                                if (roomsDict[rooms[u].Id][0].AsInteger() != numberNonResidentialPremises && roomsDict[rooms[u].Id][1].AsString() == String.Empty)
                                 {
                                     roomsDict[rooms[u].Id][1].Set("Кв." + currentNumberApartment.ToString());
 

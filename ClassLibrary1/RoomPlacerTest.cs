@@ -40,38 +40,42 @@ namespace ClassLibrary1
 
                     UV roomPos1 = currentWallPoint + 0.5 * width * vector;
                     UV roomPos2 = currentWallPoint - 0.5 * width * vector;
-
+                    XYZ roomPos1Z = new XYZ(roomPos1[0], roomPos1[1], 0);
+                    XYZ roomPos2Z = new XYZ(roomPos2[0], roomPos2[1], 0);
 
                     using (Transaction transaction = new Transaction(document))
                     {
                         transaction.Start("Safety transaction");
 
-                        Room room1 = document.Create.NewRoom(roomLevel, roomPos1);
-                        ElementId room1Id = room1.Id;
-                        try
-                        {
-                            if (room1.Area == 0)
+                            Room room1 = document.Create.NewRoom(roomLevel, roomPos1);
+                            ElementId room1Id = room1.Id;
+                            try
                             {
-                                throw new Exception();
+                                if (room1.Area == 0)
+                                {
+                                    throw new Exception();
+                                }
+                                
                             }
-                        }
-                        catch
-                        {
-                            document.Delete(room1Id);
-                        }
-                        Room room2 = document.Create.NewRoom(roomLevel, roomPos2);
-                        ElementId room2Id = room2.Id;
-                        try
-                        {
-                            if (room2.Area == 0)
+                            catch
                             {
-                                throw new Exception();
+                                document.Delete(room1Id);
                             }
-                        }
-                        catch
-                        {
-                            document.Delete(room2Id);
-                        }
+
+                            Room room2 = document.Create.NewRoom(roomLevel, roomPos2);
+                            ElementId room2Id = room2.Id;
+                            try
+                            {
+                                if (room2.Area == 0)
+                                {
+                                    throw new Exception();
+                                }
+                                
+                            }
+                            catch
+                            {
+                                document.Delete(room2Id);
+                            }
 
                         transaction.Commit();
                     }
