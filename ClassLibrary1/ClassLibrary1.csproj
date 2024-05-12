@@ -49,6 +49,9 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MathNet.Numerics, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MathNet.Numerics.5.0.0\lib\net48\MathNet.Numerics.dll</HintPath>
+    </Reference>
     <Reference Include="RevitAPI">
       <HintPath>D:\Revit 2023\Componentts\RevitAPI.dll</HintPath>
       <Private>False</Private>
@@ -69,8 +72,16 @@
   <ItemGroup>
     <Compile Include="ApartamentMaker.cs" />
     <Compile Include="Class1.cs" />
+    <Compile Include="PolygonCreator.cs" />
     <Compile Include="RoomPlacerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
 </Project>
