@@ -5,6 +5,7 @@ using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.UI;
+using Autodesk.Revit.UI.Selection;
 using Pol = ClassLibrary2;
 
 namespace ClassLibrary1
@@ -16,40 +17,49 @@ namespace ClassLibrary1
         {
             UIDocument uIDocument = commandData.Application.ActiveUIDocument;
             Document document = uIDocument.Document;
-
-            List<Level> level = new FilteredElementCollector(document).OfClass(typeof(Level)).OfCategory(BuiltInCategory.OST_Levels).Cast<Level>().ToList();
+            LevelsPicker levelsPicker = new LevelsPicker();
+            IList<Reference> levelsRefs = uIDocument.Selection.PickObjects(ObjectType.Element, levelsPicker, "Выберите уровни");
+            List<Level> levels = new List<Level>();
+            for (int j = 0; j < levelsRefs.Count; j++)
+            {
+                levels.Add(document.GetElement(levelsRefs[j]) as Level);
+            }
+            //List<Level> levels = new FilteredElementCollector(document).OfClass(typeof(Level)).OfCategory(BuiltInCategory.OST_Levels).Cast<Level>().ToList();
+            Dictionary<Level, int> lvlMinApartNumb = new Dictionary<Level, int>();
             TaskDialog.Show("Заголовок", "Начало команды");
-
-            Guid guidPlaceType = new Guid("15723a20-5ef0-40db-a947-2be11932e630"); //guid Кврт.ТипПомещения(5 тип - нежилое)
-            Guid guidNumberApartment = new Guid("77f09e29-8873-4223-bdd9-4c9050cf18a4");// guid Кврт.НомерКвартиры
-
             string nameApartmentPlaceType = "Кврт.ТипПомещения";
             string nameApartmentNumber = "Кврт.НомерКвартиры";
-            string nameApartmentArea = "Кврт.ПлощадьКвартиры";
-            string nameApartmentAreaResidential = "Кврт.ПлощадьКвартирыЖилая";
-            string nameApartmentAreaGeneral = "Кврт.ПлощадьКвартирыОбщая";
-            string nameApartmentNumberRooms = "Кврт.ЧислоКомнат";
-            string nameApartmentRoomIndex = "Кврт.ИндексПомещения";
+            //string nameApartmentArea = "Кврт.ПлощадьКвартиры";
+            //string nameApartmentAreaResidential = "Кврт.ПлощадьКвартирыЖилая";
+            //string nameApartmentAreaGeneral = "Кврт.ПлощадьКвартирыОбщая";
+            //string nameApartmentNumberRooms = "Кврт.ЧислоКомнат";
+            //string nameApartmentRoomIndex = "Кврт.ИндексПомещения";
+            string namePublicСorridor = "Межквартирный коридор";
+            string nameHall = "Лифтовой холл";
 
+            SpatialElement hall = null;
+            SpatialElement publicСorridor = null;
             int currentNumberApartment = 1;
             const int numberNonResidentialPremises = 5;
 
-            
-            for (int j = 0; j < level.Count; j++)
+            foreach (Level lvl in levels)
             {
-                Dictionary<string, UV> Apartments = new Dictionary<string, UV>(); // номер кв. и координата центра
-                Dictionary<string, Dictionary<UV, double>> ApartmentsPreliminary = new Dictionary<string, Dictionary<UV, double>>(); // номер кв. и коорд<->площадь
-                List<SpatialElement> rooms = new FilteredElementCollector(document).OfClass(typeof(SpatialElement)).Cast<SpatialElement>().Where(it => it.Level.Id.Equals(level[j].Id)).ToList();
-                List<FamilyInstance> windows = new FilteredElementCollector(document).OfClass(typeof(FamilyInstance)).OfCategory(BuiltInCategory.OST_Windows).Cast<FamilyInstance>().Where(it => it.LevelId.Equals(level[j].Id) && it.ToRoom != null && it.FromRoom != null).ToList();
-                List<FamilyInstance> doors = new FilteredElementCollector(document).OfClass(typeof(FamilyInstance)).OfCategory(BuiltInCategory.OST_Doors).Cast<FamilyInstance>().Where(it => it.LevelId.Equals(level[j].Id) && it.ToRoom != null && it.FromRoom != null).ToList();
+                lvlMinApartNumb[lvl] = currentNumberApartment;
+                Dictionary<string, List<SpatialElement>> ApartmentsRooms = new Dictionary<string, List<SpatialElement>>();
+                Dictionary<string, nUV> Apartments = new Dictionary<string, nUV>(); // номер кв. и координата центра
+                Dictionary<string, Dictionary<nUV, double>> ApartmentsPreliminary = new Dictionary<string, Dictionary<nUV, double>>(); // номер кв. и коорд<->площадь
+                List<SpatialElement> rooms = new FilteredElementCollector(document).OfClass(typeof(SpatialElement)).Cast<SpatialElement>().Where(it => it.Level.Id.Equals(lvl.Id) && it.SpatialElementType == SpatialElementType.Room).ToList();
+                List<FamilyInstance> windows = new FilteredElementCollector(document).OfClass(typeof(FamilyInstance)).OfCategory(BuiltInCategory.OST_Windows).Cast<FamilyInstance>().Where(it => it.LevelId.Equals(lvl.Id) && it.ToRoom != null && it.FromRoom != null).ToList();
+                List<FamilyInstance> doors = new FilteredElementCollector(document).OfClass(typeof(FamilyInstance)).OfCategory(BuiltInCategory.OST_Doors).Cast<FamilyInstance>().Where(it => it.LevelId.Equals(lvl.Id) && it.ToRoom != null && it.FromRoom != null).ToList();
                 List<FamilyInstance> opening = new List<FamilyInstance>();
                 Dictionary<ElementId, Parameter[]> roomsDict = new Dictionary<ElementId, Parameter[]>();
+                List<SpatialElement> nonResidentialPremisesRooms = new List<SpatialElement>();
                 using (Transaction transaction = new Transaction(document))
                 {
                     transaction.Start("Safety transaction");
                     opening.AddRange(windows);
                     opening.AddRange(doors);
- 
+
                     for (int i = 0; i < rooms.Count; i++)
                     {
                         ParameterSet parameterSet = rooms[i].Parameters;
@@ -59,6 +69,8 @@ namespace ClassLibrary1
                         {
                             if (para.IsShared && para.Definition.Name == nameApartmentNumber) { apartmentNumber = para; }
                             else if (para.IsShared && para.Definition.Name == nameApartmentPlaceType) { roomType = para; }
+                            else if (para.AsString() == nameHall) { hall = rooms[i]; }
+                            else if (para.AsString() == namePublicСorridor) { publicСorridor = rooms[i]; }
                         }
                         roomsDict.Add(rooms[i].Id, new Parameter[] { roomType, apartmentNumber });
                     }
@@ -109,15 +121,15 @@ namespace ClassLibrary1
                     IEnumerator<GeometryObject> geometryEl = room.ClosedShell.GetEnumerator();
                     geometryEl.MoveNext();
                     Solid solid = geometryEl.Current as Solid;
-                    UV center = UV.Zero;
+                    nUV center = nUV.Zero;
                     if (solid != null && roomsDict[room.Id][1].AsString() != null && roomsDict[room.Id][0].AsInteger() != numberNonResidentialPremises)
                     {
-                        center = new UV(solid.ComputeCentroid().X, solid.ComputeCentroid().Y);
+                        center = new nUV(solid.ComputeCentroid().X, solid.ComputeCentroid().Y);
                     }
                     else continue;
                     if (!ApartmentsPreliminary.ContainsKey(roomsDict[room.Id][1].AsString()))
                     {
-                        Dictionary<UV, double> keyValuePairs = new Dictionary<UV, double> { { center, room.Area } };
+                        Dictionary<nUV, double> keyValuePairs = new Dictionary<nUV, double> { { center, room.Area } };
                         ApartmentsPreliminary.Add(roomsDict[room.Id][1].AsString(), keyValuePairs);
                     }
                     else
@@ -127,14 +139,14 @@ namespace ClassLibrary1
                 }
                 foreach (var apart in ApartmentsPreliminary)
                 {
-                    UV numerator = new UV(0, 0);
+                    nUV numerator = new nUV(0, 0);
                     double denominator = 0;
                     foreach (var room in apart.Value)
                     {
                         numerator += room.Key * room.Value;
                         denominator += room.Value;
                     }
-                    UV center = numerator / denominator;
+                    nUV center = numerator / denominator;
                     Apartments.Add(apart.Key, center);
                 }
                 Pol.Point[] points = new Pol.Point[Apartments.Count];
@@ -145,9 +157,109 @@ namespace ClassLibrary1
                     var apart = apartEnumerator.Current;
                     points[i] = new Pol.Point(apart.Value.U, apart.Value.V);
                 }
-                Pol.Point[] orderedPoints = Pol.PolygonCreator.Assembly(points);
+                nUV[] orderedPoints = TransformationFromPointToUV(Pol.PolygonCreator.Assembly(points));
+
+                //выбор первой квартиры для нумерации:
+                //находим координаты холла и коридора МОП
+                UV hallPoint = new UV((hall.Location as LocationPoint).Point.X, (hall.Location as LocationPoint).Point.Y);
+                UV publicCorridorPoint = new UV((publicСorridor.Location as LocationPoint).Point.X, (publicСorridor.Location as LocationPoint).Point.Y);
+                //вектор холл -> коридор
+                UV vectorHallToCorridor = publicCorridorPoint - hallPoint;
+                UV normalLeftVector = new UV(-1 * vectorHallToCorridor.V, vectorHallToCorridor.U);
+                //знак точки слева от вектора
+                bool sign = AboveLine(hallPoint, publicCorridorPoint, hallPoint + normalLeftVector);
+                List<UV> uvs = new List<UV>(); //точки слева от выхода из хола в коридор
+                foreach (var t in orderedPoints)
+                {
+                    if (AboveLine(hallPoint, publicCorridorPoint, t) == sign) { uvs.Add(t); }
+                }
+                UV firstApartmentPoint = MostPerpendicular(hallPoint, publicCorridorPoint, uvs);
+                for (int i = 0; i < orderedPoints.Length; i++)
+                {
+                    if (orderedPoints[i] == firstApartmentPoint)
+                    {
+                        LeftShift(orderedPoints, i);
+                    }
+                }
+                for (int i = 0; i < rooms.Count; i++)
+                {
+                    ParameterSet parSet = rooms[i].Parameters;
+                    foreach (Parameter para in parSet)
+                    {
+                        if (para.IsShared && para.Definition.Name == nameApartmentNumber && para.AsString().Contains("Кв."))
+                        {
+                            if (ApartmentsRooms.ContainsKey(para.AsString()))
+                            {
+                                ApartmentsRooms[para.AsString()].Add(rooms[i]);
+                                continue;
+                            }
+                            ApartmentsRooms.Add(para.AsString(), new List<SpatialElement> { rooms[i] });
+                        }
+                    }
+                }
+                using (Transaction transaction1 = new Transaction(document))
+                {
+                    transaction1.Start("Safety transaction");
+                    for (int i = lvlMinApartNumb[lvl]; i < lvlMinApartNumb[lvl] + Apartments.Count; i++)
+                    {
+                        int index = Array.IndexOf(orderedPoints, Apartments["Кв." + i.ToString()]);
+                        foreach (var v in ApartmentsRooms["Кв." + i.ToString()])
+                        {
+                            roomsDict[v.Id][1].Set("Кв." + (index + lvlMinApartNumb[lvl]).ToString());
+                        }
+                    }
+                    transaction1.Commit();
+                }
+                    
             }
             return Result.Succeeded;
         }
+        public static bool AboveLine(UV p1, UV p2, UV p3)
+        {
+            return p3.V > p1.V + (p2.V - p1.V) / (p2.U - p1.U) * (p3.U - p1.U);
+        }
+        public static nUV TransformationFromPointToUV(Pol.Point point)
+        {
+            nUV uv = new nUV(point.X, point.Y);
+            return uv;
+        }
+        public static nUV[] TransformationFromPointToUV(Pol.Point[] points)
+        {
+            nUV[] res = new nUV[points.Length];
+            for (int i = 0; i < points.Length; i++)
+            {
+                res[i] = TransformationFromPointToUV(points[i]);
+            }
+            return res;
+        }
+        public static UV MostPerpendicular(UV p1, UV p2, List<UV> arr)
+        {
+            UV vector1 = p2 - p1;
+            double minCos = 1;
+            UV res = null;
+            foreach (var p in arr)
+            {
+                UV vector2 = p - p1;
+                double currentCos = Math.Abs(vector1.DotProduct(vector2) / (vector1.GetLength() * vector2.GetLength()));
+                if (currentCos < minCos)
+                {
+                    minCos = currentCos;
+                    res = p;
+                }
+            }
+            return res;
+        }
+        public static void LeftShift<T>(T[] array, int positions)
+        {
+            int length = array.Length;
+            positions = positions % length; // Handle positions greater than array length
+
+            T[] temp = new T[positions];
+            Array.Copy(array, temp, positions); // Copy the elements to a temporary array
+
+            Array.Copy(array, positions, array, 0, length - positions); // Move remaining elements to the left
+            Array.Copy(temp, 0, array, length - positions, positions); // Move elements from the temporary array to the end
+        }
     }
+    
 }

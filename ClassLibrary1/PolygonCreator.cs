@@ -19,7 +19,8 @@ namespace ClassLibrary2
             {
                 res[i] = myPolygon.Edges[i].P1;
             }
-            return res;
+            Point[] finalRes = Clockwise(res);
+            return finalRes;
         }
         public static void randomTestPolygon(ref Polygon p, int t = 20)
         {
@@ -162,6 +163,41 @@ namespace ClassLibrary2
                 (p.Vertices[j], p.Vertices[i]) = (p.Vertices[i], temp);
             }
             p.Edges = new Polygon(p.Vertices).Edges;
+        }
+        public static Point[] Clockwise(Point[] points)
+        {
+            Point[] res = new Point[points.Length];
+            Point[] temp = new Point[points.Length + 1];
+            Point[] temp2 = new Point[points.Length + 1];
+            temp[temp.Length - 1] = points[0];
+            for (int i = 0; i < points.Length; i++)
+            {
+                temp[i] = points[i];
+            }
+            double doubleArea = 0;
+            for (int j = 0; j < temp.Length - 1; j++)
+            {
+                doubleArea += (temp[j].X - temp[j + 1].X) * (temp[j].Y + temp[j + 1].Y);
+            }
+            if (doubleArea > 0)
+            {
+                for (int i = 0; i < temp.Length; i++)
+                {
+                    temp2[temp2.Length - 1 - i] = temp[i];
+                }
+            }
+            else
+            {
+                for (int i = 0; i < temp.Length; i++)
+                {
+                    temp2[i] = temp[i];
+                }
+            }
+            for (int k = 0; k < res.Length; k++)
+            {
+                res[k] = temp2[k];
+            }
+            return res;
         }
     }
     public class Point : ICloneable

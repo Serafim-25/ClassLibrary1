@@ -72,6 +72,8 @@
   <ItemGroup>
     <Compile Include="ApartamentMaker.cs" />
     <Compile Include="Class1.cs" />
+    <Compile Include="nUV.cs" />
+    <Compile Include="LevelsPicker.cs" />
     <Compile Include="PolygonCreator.cs" />
     <Compile Include="RoomPlacerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
