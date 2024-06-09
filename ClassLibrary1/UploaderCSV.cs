@@ -66,7 +66,7 @@ namespace ClassLibrary1
                     {
                         foreach (Parameter paramApNum in parameterSet)
                         {
-                            if (paramApNum.Definition.Name == nameApartmentNumber)
+                            if (paramApNum.Definition.Name == nameApartmentNumber && paramApNum.AsValueString().Contains("К"))
                             {
                                 var valueApartmentNumbe = paramApNum.AsValueString();
                                 if (!roomsApartments.ContainsKey(valueApartmentNumbe))
@@ -88,6 +88,37 @@ namespace ClassLibrary1
             // Создание базы данных для вывода CSV
             var apartments = new List<ApartmentCSV>();
 
+            var roomsList = new List<string>()
+            {
+                "Kitchen",
+                "Room1",
+                "Room2",
+                "Room3",
+                "Room4",
+                "Bathroom1",
+                "CombinedBathroom1",
+                "CombinedBathroom2",
+                "Toilet1 ",
+                "Toilet2 ",
+                "Hall",
+                "Hallway",
+                "DressingRoom1",
+                "DressingRoom2",
+                "Storeroom1",
+                "Storeroom2",
+                "Loggia1K05",
+                "Loggia2K05",
+                "Loggia3K05",
+                "Balcony1K03",
+                "Balcony2K03",
+                "Balcony3K03",
+                "Loggia1K1",
+                "Loggia2K1",
+                "Loggia3K1",
+                "Balcony1K1",
+                "Balcony2K1",
+                "Balcony3K1"
+            };
             var roomsDictionary = new Dictionary<string, string>()
             {
                 { "Кухня", "Kitchen"},
@@ -98,11 +129,14 @@ namespace ClassLibrary1
                 { "Ванная", "Bathroom1"},
                 { "Совмещенный санузел1", "CombinedBathroom1"},
                 { "Совмещенный санузел2", "CombinedBathroom2"},
+                { "Туалет1", "Toilet1 "},
+                { "Туалет2", "Toilet2 "},
                 { "Холл", "Hall"},
                 { "Коридор", "Hallway"},
                 { "Гардеробная1", "DressingRoom1"},
                 { "Гардеробная2", "DressingRoom2"},
                 { "Кладовая1", "Storeroom1"},
+                { "Кладовая (гардероб)", "Storeroom1"},
                 { "Кладовая2", "Storeroom2"},
                 { "Лоджия1&K05", "Loggia1K05"},
                 { "Лоджия2&K05", "Loggia2K05"},
@@ -150,6 +184,12 @@ namespace ClassLibrary1
                 }
 
                 var roomsDicTemp = new Dictionary<string, string>();
+                foreach (var room in roomsList)
+                {
+                    roomsDicTemp.Add(room, "0");
+                }
+
+                //var roomsDicTemp = new Dictionary<string, string>();
                 foreach (SpatialElement room in roomsApart)
                 {
                     var parameterSet = room.Parameters;
@@ -171,7 +211,8 @@ namespace ClassLibrary1
                         else if (areaCoefficient == "1") { roomStyle += "&K1"; }
                     }
 
-                    roomsDicTemp.Add(roomsDictionary[roomStyle], roomArea);
+                    roomsDicTemp[roomsDictionary[roomStyle]] = roomArea;
+                    //roomsDicTemp.Add(roomsDictionary[roomStyle], roomArea);
                 }
 
                 apartments.Add(new ApartmentCSV
@@ -185,42 +226,42 @@ namespace ClassLibrary1
                     Appointment = parametersDicTemp[nameAppointmentRoom],
                     NumberOfRooms = int.Parse(parametersDicTemp[nameNumberOfRooms]),
                     Type = parametersDicTemp[nameType],
-                    LivingArea = Math.Round(Double.Parse(parametersDicTemp[nameLivingArea]) * factorConversionFootSqToMeterSq, 2),
-                    TotalArea = Math.Round(Double.Parse(parametersDicTemp[nameTotalArea]) * factorConversionFootSqToMeterSq, 2),
-                    ReducedArea = Math.Round(Double.Parse(parametersDicTemp[nameReducedArea]) * factorConversionFootSqToMeterSq, 2),
-                    CheckingTotalArea = Math.Round(Double.Parse(parametersDicTemp[nameReducedArea]) * factorConversionFootSqToMeterSq, 2),
-                    Kitchen = Math.Round(Double.Parse(roomsDicTemp["Kitchen"]) * factorConversionFootSqToMeterSq, 2),
-                    Room1 = Math.Round(Double.Parse(roomsDicTemp["Room1"]) * factorConversionFootSqToMeterSq, 2),
-                    Room2 = Math.Round(Double.Parse(roomsDicTemp["Room2"]) * factorConversionFootSqToMeterSq, 2),
-                    Room3 = Math.Round(Double.Parse(roomsDicTemp["Room3"]) * factorConversionFootSqToMeterSq, 2),
-                    Room4 = Math.Round(Double.Parse(roomsDicTemp["Room4"]) * factorConversionFootSqToMeterSq, 2),
-                    Bathroom1 = Math.Round(Double.Parse(roomsDicTemp["Bathroom1"]) * factorConversionFootSqToMeterSq, 2),
-                    CombinedBathroom1 = Math.Round(Double.Parse(roomsDicTemp["CombinedBathroom1"]) * factorConversionFootSqToMeterSq, 2),
-                    CombinedBathroom2 = Math.Round(Double.Parse(roomsDicTemp["CombinedBathroom2"]) * factorConversionFootSqToMeterSq, 2),
-                    Hall = Math.Round(Double.Parse(roomsDicTemp["Hall"]) * factorConversionFootSqToMeterSq, 2),
-                    Hallway = Math.Round(Double.Parse(roomsDicTemp["Hallway"]) * factorConversionFootSqToMeterSq, 2),
-                    DressingRoom1 = Math.Round(Double.Parse(roomsDicTemp["DressingRoom1"]) * factorConversionFootSqToMeterSq, 2),
-                    DressingRoom2 = Math.Round(Double.Parse(roomsDicTemp["DressingRoom2"]) * factorConversionFootSqToMeterSq, 2),
-                    Storeroom1 = Math.Round(Double.Parse(roomsDicTemp["Storeroom1"]) * factorConversionFootSqToMeterSq, 2),
-                    Storeroom2 = Math.Round(Double.Parse(roomsDicTemp["Storeroom2"]) * factorConversionFootSqToMeterSq, 2),
-                    Loggia1K05 = Math.Round(Double.Parse(roomsDicTemp["Loggia1K05"]) * factorConversionFootSqToMeterSq, 2),
-                    Loggia2K05 = Math.Round(Double.Parse(roomsDicTemp["Loggia2K05"]) * factorConversionFootSqToMeterSq, 2),
-                    Loggia3K05 = Math.Round(Double.Parse(roomsDicTemp["Loggia3K05"]) * factorConversionFootSqToMeterSq, 2),
-                    NumberOfLoggias = (Convert.ToInt32(roomsDicTemp.ContainsKey("Loggia1K05"))
-                        + Convert.ToInt32(roomsDicTemp.ContainsKey("Loggia2K05"))
-                        + Convert.ToInt32(roomsDicTemp.ContainsKey("Loggia3K05"))),
-                    Balcony1K03 = Math.Round(Double.Parse(roomsDicTemp["Balcony1K03"]) * factorConversionFootSqToMeterSq, 2),
-                    Balcony2K03 = Math.Round(Double.Parse(roomsDicTemp["Balcony2K03"]) * factorConversionFootSqToMeterSq, 2),
-                    Balcony3K03 = Math.Round(Double.Parse(roomsDicTemp["Balcony3K03"]) * factorConversionFootSqToMeterSq, 2),
-                    NumberOfBalconies = (Convert.ToInt32(roomsDicTemp.ContainsKey("Balcony1K03"))
-                        + Convert.ToInt32(roomsDicTemp.ContainsKey("Balcony2K03"))
-                        + Convert.ToInt32(roomsDicTemp.ContainsKey("Balcony3K03"))),
-                    Loggia1K1 = Math.Round(Double.Parse(roomsDicTemp["Loggia1K1"]) * factorConversionFootSqToMeterSq, 2),
-                    Loggia2K1 = Math.Round(Double.Parse(roomsDicTemp["Loggia2K1"]) * factorConversionFootSqToMeterSq, 2),
-                    Loggia3K1 = Math.Round(Double.Parse(roomsDicTemp["Loggia3K1"]) * factorConversionFootSqToMeterSq, 2),
-                    Balcony1K1 = Math.Round(Double.Parse(roomsDicTemp["Balcony1K1"]) * factorConversionFootSqToMeterSq, 2),
-                    Balcony2K1 = Math.Round(Double.Parse(roomsDicTemp["Balcony2K1"]) * factorConversionFootSqToMeterSq, 2),
-                    Balcony3K1 = Math.Round(Double.Parse(roomsDicTemp["Balcony3K1"]) * factorConversionFootSqToMeterSq, 2)
+                    LivingArea = Double.Parse(parametersDicTemp[nameLivingArea]),
+                    TotalArea = Double.Parse(parametersDicTemp[nameTotalArea]),
+                    ReducedArea = Double.Parse(parametersDicTemp[nameReducedArea]),
+                    CheckingTotalArea = Double.Parse(parametersDicTemp[nameReducedArea]),
+                    Kitchen = Math.Round(Double.Parse(roomsDicTemp["Kitchen"]), 2),
+                    Room1 = Math.Round(Double.Parse(roomsDicTemp["Room1"]), 2),
+                    Room2 = Math.Round(Double.Parse(roomsDicTemp["Room2"]), 2),
+                    Room3 = Math.Round(Double.Parse(roomsDicTemp["Room3"]), 2),
+                    Room4 = Math.Round(Double.Parse(roomsDicTemp["Room4"]) , 2),
+                    Bathroom1 = Math.Round(Double.Parse(roomsDicTemp["Bathroom1"]), 2),
+                    CombinedBathroom1 = Math.Round(Double.Parse(roomsDicTemp["CombinedBathroom1"]), 2),
+                    CombinedBathroom2 = Math.Round(Double.Parse(roomsDicTemp["CombinedBathroom2"]), 2),
+                    Hall = Math.Round(Double.Parse(roomsDicTemp["Hall"]), 2),
+                    Hallway = Math.Round(Double.Parse(roomsDicTemp["Hallway"]), 2),
+                    DressingRoom1 = Math.Round(Double.Parse(roomsDicTemp["DressingRoom1"]), 2),
+                    DressingRoom2 = Math.Round(Double.Parse(roomsDicTemp["DressingRoom2"]), 2),
+                    Storeroom1 = Math.Round(Double.Parse(roomsDicTemp["Storeroom1"]), 2),
+                    Storeroom2 = Math.Round(Double.Parse(roomsDicTemp["Storeroom2"]), 2),
+                    Loggia1K05 = Math.Round(Double.Parse(roomsDicTemp["Loggia1K05"]), 2),
+                    Loggia2K05 = Math.Round(Double.Parse(roomsDicTemp["Loggia2K05"]), 2),
+                    Loggia3K05 = Math.Round(Double.Parse(roomsDicTemp["Loggia3K05"]), 2),
+                    NumberOfLoggias = (Convert.ToInt32(roomsDicTemp["Loggia1K05"] != "0")
+                        + Convert.ToInt32(roomsDicTemp["Loggia2K05"] != "0")
+                        + Convert.ToInt32(roomsDicTemp["Loggia3K05"] != "0")),
+                    Balcony1K03 = Math.Round(Double.Parse(roomsDicTemp["Balcony1K03"]), 2),
+                    Balcony2K03 = Math.Round(Double.Parse(roomsDicTemp["Balcony2K03"]), 2),
+                    Balcony3K03 = Math.Round(Double.Parse(roomsDicTemp["Balcony3K03"]), 2),
+                    NumberOfBalconies = (Convert.ToInt32(roomsDicTemp["Balcony1K03"] != "0")
+                        + Convert.ToInt32(roomsDicTemp["Balcony2K03"] != "0")
+                        + Convert.ToInt32(roomsDicTemp["Balcony3K03"] != "0")),
+                    Loggia1K1 = Math.Round(Double.Parse(roomsDicTemp["Loggia1K1"]), 2),
+                    Loggia2K1 = Math.Round(Double.Parse(roomsDicTemp["Loggia2K1"]), 2),
+                    Loggia3K1 = Math.Round(Double.Parse(roomsDicTemp["Loggia3K1"]), 2),
+                    Balcony1K1 = Math.Round(Double.Parse(roomsDicTemp["Balcony1K1"]), 2),
+                    Balcony2K1 = Math.Round(Double.Parse(roomsDicTemp["Balcony2K1"]), 2),
+                    Balcony3K1 = Math.Round(Double.Parse(roomsDicTemp["Balcony3K1"]), 2)
                 });
             }
 
