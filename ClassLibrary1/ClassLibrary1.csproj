@@ -71,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApartamentMaker.cs" />
+    <Compile Include="ApartmentNumberer.cs" />
     <Compile Include="Class1.cs" />
     <Compile Include="nUV.cs" />
     <Compile Include="LevelsPicker.cs" />
