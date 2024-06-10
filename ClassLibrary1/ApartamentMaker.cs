@@ -40,8 +40,6 @@ namespace ClassLibrary1
             SpatialElement publicСorridor = null;
             int currentNumberApartment = 1;
             const int numberNonResidentialPremises = 5;
-            //комментарий
-            //ком2
             foreach (Level lvl in levels)
             {
                 lvlMinApartNumb[lvl] = currentNumberApartment;
