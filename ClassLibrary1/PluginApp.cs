@@ -47,6 +47,9 @@ namespace ClassLibrary1
 
             ribbonPanel.AddItem(new PushButtonData(commandName1, commandName1, assemblyName, "ClassLibrary1.RoomName"));
 
+            var cleaner = "Очистка параметров квартир";
+            ribbonPanel.AddItem(new PushButtonData(cleaner, cleaner, assemblyName, "ClassLibrary1.Cleaner"));
+
             return Result.Succeeded;
         }
     }

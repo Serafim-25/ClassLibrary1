@@ -99,6 +99,7 @@
   <ItemGroup>
     <Compile Include="ApartamentMaker.cs" />
     <Compile Include="Class1.cs" />
+    <Compile Include="Cleaner.cs" />
     <Compile Include="nUV.cs" />
     <Compile Include="LevelsPicker.cs" />
     <Compile Include="PluginApp.cs" />

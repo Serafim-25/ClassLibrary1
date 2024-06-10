@@ -32,19 +32,23 @@ namespace ClassLibrary1
             string nameAppointmentRoom = "Назначение";
             string valueAppointmentRoomLiving = "Жилое помещение";
             string nameApartmentNumber = "Кврт.НомерКвартиры";
+            string nameReducedArea = "Кврт.ПлощадьКвартиры";
+            string nameLivingArea = "Кврт.ПлощадьКвартирыЖилая";
+            string nameTotalArea = "Кврт.ПлощадьКвартирыОбщая";
+            string nameNumberOfRooms = "Кврт.ЧислоКомнат";
+            string nameType = "Кврт.ИндексПомещения";
+            string nameAreaCoefficient = "Кврт.КоэффициентПлощади";
+            string nameRoomType = "Кврт.ТипПомещения";
+            string nameRoomStyle = "Стиль помещений";
+
+            // !!! Подумать про них !!!
             string nameVerticalAxes = "Кврт.СтроительныеОсиВерт";
             string nameHorizontalAxes = "Кврт.СтроительныеОсиГор";
             string nameBuilding = "Кврт.Корпус";
             string nameSection = "Кврт.НомерСекции";
             string nameEntranceNumber = "Кврт.НомерПодъезда";
-            string nameNumberOfRooms = "Кврт.ЧислоКомнат";
-            string nameType = "Кврт.ИндексПомещения";
-            string nameLivingArea = "Кврт.ПлощадьКвартирыЖилая";
-            string nameTotalArea = "Кврт.ПлощадьКвартирыОбщая";
-            string nameReducedArea = "Кврт.ПлощадьКвартиры";
-            string nameRoomStyle = "Стиль помещений";
             string nameRoomArea = "Площадь";
-            string nameAreaCoefficient = "Кврт.КоэффициентПлощади";
+            
             
 
             // Создание списка помещений            
