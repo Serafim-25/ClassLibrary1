@@ -36,12 +36,11 @@ namespace ClassLibrary1
             //string nameApartmentRoomIndex = "Кврт.ИндексПомещения";
             string namePublicСorridor = "Межквартирный коридор";
             string nameHall = "Лифтовой холл";
-
             SpatialElement hall = null;
             SpatialElement publicСorridor = null;
             int currentNumberApartment = 1;
             const int numberNonResidentialPremises = 5;
-
+            //комментарий
             foreach (Level lvl in levels)
             {
                 lvlMinApartNumb[lvl] = currentNumberApartment;
