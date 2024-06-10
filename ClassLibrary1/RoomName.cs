@@ -12,11 +12,11 @@ using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.UI;
 using Document = Autodesk.Revit.DB.Document;
 
-namespace Plugin
+namespace ClassLibrary1
 {
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
-    internal class Command : IExternalCommand
+    internal class RoomName : IExternalCommand
     {
         public const string Kitchen = "GS_600_Плита кухонная";
         public const string Bedroom = "Кровать";

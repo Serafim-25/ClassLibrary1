@@ -91,7 +91,6 @@ namespace ClassLibrary1
                                     paramForClean.Set(0);
                                     paramForClean.SetValueString(" ");
                                 }
-                                
                             }
                         }
                         

@@ -22,7 +22,7 @@ namespace ClassLibrary1
 
             var tabName = "ApartBuild";
             var ribbonPanelName = "Квартирография";
-            var commandName1 = "Распознование помещений";
+            
 
             application.CreateRibbonTab(tabName);
             var ribbonPanel = application.CreateRibbonPanel(tabName, ribbonPanelName);
@@ -45,6 +45,7 @@ namespace ClassLibrary1
             var apartamentMaker = "ApartamentMaker";
             ribbonPanel.AddItem(new PushButtonData(apartamentMaker, apartamentMaker, assemblyName, "ClassLibrary1.ApartamentMaker"));
 
+            var commandName1 = "Распознование помещений"; 
             ribbonPanel.AddItem(new PushButtonData(commandName1, commandName1, assemblyName, "ClassLibrary1.RoomName"));
 
             var cleaner = "Очистка параметров квартир";
