@@ -45,7 +45,7 @@ namespace ClassLibrary1
             var apartamentMaker = "ApartamentMaker";
             ribbonPanel.AddItem(new PushButtonData(apartamentMaker, apartamentMaker, assemblyName, "ClassLibrary1.ApartamentMaker"));
 
-            ribbonPanel.AddItem(new PushButtonData(commandName1, commandName1, assemblyName, "ClassLibrary1.Command"));
+            ribbonPanel.AddItem(new PushButtonData(commandName1, commandName1, assemblyName, "ClassLibrary1.RoomName"));
 
             return Result.Succeeded;
         }
