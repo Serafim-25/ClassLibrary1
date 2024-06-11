@@ -15,6 +15,8 @@ using Autodesk.Revit.DB.Architecture;
 using System.IO;
 using Autodesk.Revit.Creation;
 using System.Xml.Linq;
+using System.Reflection;
+using FirstPlugin;
 
 namespace ClassLibrary1
 {
@@ -40,14 +42,6 @@ namespace ClassLibrary1
             string nameRoomType = "Кврт.ТипПомещения";
             string nameRoomStyle = "Стиль помещений";
 
-            // !!! Подумать про них !!!
-            string nameVerticalAxes = "Кврт.СтроительныеОсиВерт";
-            string nameHorizontalAxes = "Кврт.СтроительныеОсиГор";
-            string nameBuilding = "Кврт.Корпус";
-            string nameSection = "Кврт.НомерСекции";
-            string nameEntranceNumber = "Кврт.НомерПодъезда";
-            string nameRoomArea = "Площадь";
-
             // Создание списка помещений            
             var rooms = new FilteredElementCollector(doc)
                 .OfClass(typeof(SpatialElement)).Cast<SpatialElement>()
@@ -55,6 +49,7 @@ namespace ClassLibrary1
                 .Cast<Room>()
                 .ToList();          
 
+            // Список наименований параметров, которые будем чистить
             var parametersNameNecessary = new List<string>()
                 {
                     nameApartmentNumber,
@@ -65,41 +60,69 @@ namespace ClassLibrary1
                     nameType,
                     nameAreaCoefficient,
                     nameRoomType,
-                    nameRoomStyle 
+                    nameRoomStyle
                 };
 
+            // Дастаем спецификацию с ключем для помещений, а именно с ключом "Стиль помещений"
+            var viewKeySchedule = new FilteredElementCollector(doc)
+                .OfClass(typeof(ViewSchedule)).Cast<ViewSchedule>()
+                .Where(it => it.Name == "АР_Спецификация стилей помещений");
 
-            var transaction = new Transaction(doc, "Floor creation");
+            // Делаем список ID всех объектов, которые связаны со спецификацией
+            var listElementIds = new List<ElementId>();
+            foreach (var v in viewKeySchedule)
+            {
+                var ids = v.GetDependentElements(null);
+                foreach (var id in ids)
+                {
+                    listElementIds.Add(id);
+                }
+            }
+
+            // Фильтруем список и оставляем только ID всех Element-ключей
+            var listKeyElementIds = listElementIds.Where(it => doc.GetElement(it).GetType() == typeof(Element)
+                && doc.GetElement(it).Name != "АР_Спецификация стилей помещений"
+                && doc.GetElement(it).Name != "")
+                .ToList();
+
+
+            var transaction = new Transaction(doc, "Cleaner");
             transaction.Start();
+            
             foreach (Room room in rooms)
             {
                 var parameterSet = room.Parameters;
 
-                
                 foreach (Parameter param in parameterSet)
                 {
-                    room.LookupParameter("Стиль помещений").Set("Тарная");
                     if (param.Definition.Name == nameAppointmentRoom && param.AsString() == valueAppointmentRoomLiving)
                     {
+                        int counter = 0;
                         foreach (Parameter paramForClean in parameterSet)
                         {
                             foreach (string nameParam in parametersNameNecessary)
                             {
-                                if (paramForClean.Definition.Name == nameParam) 
-                                { 
-                                    paramForClean.Set(" ");
+                                if (paramForClean.Definition.Name == nameParam)
+                                {
+                                    paramForClean.Set("");
                                     paramForClean.Set(0);
-                                    paramForClean.SetValueString(" ");
+                                    paramForClean.SetValueString("");
+                                    if (paramForClean.Definition.Name == nameRoomStyle)
+                                    {
+                                        paramForClean.Set(listKeyElementIds[1]);
+                                    }
+                                    counter++;
+                                    break;
                                 }
                             }
+                            if (counter == parametersNameNecessary.Count()) { break; }
                         }
-                        
+                        break;
                     }
                 }
             }
-            transaction.Commit();
 
-            
+            transaction.Commit();          
             return Result.Succeeded;
         }
     }
