@@ -66,18 +66,11 @@ namespace ClassLibrary1
             // Дастаем спецификацию с ключем для помещений, а именно с ключом "Стиль помещений"
             var viewKeySchedule = new FilteredElementCollector(doc)
                 .OfClass(typeof(ViewSchedule)).Cast<ViewSchedule>()
-                .Where(it => it.Name == "АР_Спецификация стилей помещений");
+                .Where(it => it.Name == "АР_Спецификация стилей помещений")
+                .First();
 
             // Делаем список ID всех объектов, которые связаны со спецификацией
-            var listElementIds = new List<ElementId>();
-            foreach (var v in viewKeySchedule)
-            {
-                var ids = v.GetDependentElements(null);
-                foreach (var id in ids)
-                {
-                    listElementIds.Add(id);
-                }
-            }
+            var listElementIds = viewKeySchedule.GetDependentElements(null).ToList();
 
             // Фильтруем список и оставляем только ID всех Element-ключей
             var listKeyElementIds = listElementIds.Where(it => doc.GetElement(it).GetType() == typeof(Element)
@@ -85,14 +78,12 @@ namespace ClassLibrary1
                 && doc.GetElement(it).Name != "")
                 .ToList();
 
-
             var transaction = new Transaction(doc, "Cleaner");
             transaction.Start();
             
             foreach (Room room in rooms)
             {
                 var parameterSet = room.Parameters;
-
                 foreach (Parameter param in parameterSet)
                 {
                     if (param.Definition.Name == nameAppointmentRoom && param.AsString() == valueAppointmentRoomLiving)
