@@ -27,29 +27,21 @@ namespace ClassLibrary1
             application.CreateRibbonTab(tabName);
             var ribbonPanel = application.CreateRibbonPanel(tabName, ribbonPanelName);
 
-            //var firstCommandName = "Определение жилых помещений";
-            //ribbonPanel.AddItem(new PushButtonData(firstCommandName, firstCommandName, assemblyName, "FirstPlugin.FirstCommand"));
+            var roomNameName = "Распознование помещений";
+            var roomName = ribbonPanel.AddItem(new PushButtonData(roomNameName, roomNameName, assemblyName, "ClassLibrary1.RoomName"));
 
-            //var firstCommandName = "Сбор квартирографии";
-            //ribbonPanel.AddItem(new PushButtonData(firstCommandName, firstCommandName, assemblyName, "FirstPlugin.FirstCommand"));
+            var apartamentMakerName = "ApartamentMaker";
+            var apartamentMaker = ribbonPanel.AddItem(new PushButtonData(apartamentMakerName, apartamentMakerName, assemblyName, "ClassLibrary1.ApartamentMaker"));
 
-            //var firstCommandName = "Заполнение параметров квартир";
-            //ribbonPanel.AddItem(new PushButtonData(firstCommandName, firstCommandName, assemblyName, "FirstPlugin.FirstCommand"));
+            // !!! Задать правильное наименование класса !!!
+            var calculatedParametersName = "ApartamentMaker";
+            var calculatedParameters = ribbonPanel.AddItem(new PushButtonData(calculatedParametersName, calculatedParametersName, assemblyName, "ClassLibrary1.Test"));
 
-            var UploaderCSVCommandName = "Выгрузка CSV";
-            ribbonPanel.AddItem(new PushButtonData(UploaderCSVCommandName, UploaderCSVCommandName, assemblyName, "ClassLibrary1.UploaderCSV"));
+            var uploaderCSVCommandName = "Выгрузка CSV";
+            var uploaderCSVCommand = ribbonPanel.AddItem(new PushButtonData(uploaderCSVCommandName, uploaderCSVCommandName, assemblyName, "ClassLibrary1.UploaderCSV"));
 
-            var Test= "Test";
-            ribbonPanel.AddItem(new PushButtonData(Test, Test, assemblyName, "ClassLibrary1.Test"));
-
-            var apartamentMaker = "ApartamentMaker";
-            ribbonPanel.AddItem(new PushButtonData(apartamentMaker, apartamentMaker, assemblyName, "ClassLibrary1.ApartamentMaker"));
-
-            var commandName1 = "Распознование помещений"; 
-            ribbonPanel.AddItem(new PushButtonData(commandName1, commandName1, assemblyName, "ClassLibrary1.RoomName"));
-
-            var cleaner = "Очистка параметров квартир";
-            ribbonPanel.AddItem(new PushButtonData(cleaner, cleaner, assemblyName, "ClassLibrary1.Cleaner"));
+            var cleanerName = "Очистка параметров квартир";
+            var cleaner = ribbonPanel.AddItem(new PushButtonData(cleanerName, cleanerName, assemblyName, "ClassLibrary1.Cleaner"));
 
             return Result.Succeeded;
         }
