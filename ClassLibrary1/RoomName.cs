@@ -18,12 +18,12 @@ namespace ClassLibrary1
     [Regeneration(RegenerationOption.Manual)]
     internal class RoomName : IExternalCommand
     {
-        public const string Kitchen = "GS_600_Плита кухонная";
-        public const string Bedroom = "Кровать";
-        public const string LivingRoom = "Диван";
-        public const string Hall = "GS_700_Щит квартирный ЩК";
-        public const string Loggia = "GS_500_Кондиционер";
-        public const string Bathroom = "GS_620_Ванна стальная эмалированная";
+        public const string Stove = "GS_600_Плита кухонная";
+        public const string Bed = "Кровать";
+        public const string Sofa = "Диван";
+        public const string Shield = "GS_700_Щит квартирный ЩК";
+        public const string Conditioner = "GS_500_Кондиционер";
+        public const string Bath = "GS_620_Ванна стальная эмалированная";
         public const string Toilet = "GS_620_Унитаз керамический компакт";
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
@@ -83,7 +83,7 @@ namespace ClassLibrary1
                             string famname = ftype.FamilyName;
                             famnames.Add(famname);
 
-                            if (famnames.Contains(Bathroom) && famnames.Contains(Toilet))
+                            if (famnames.Contains(Bath) && famnames.Contains(Toilet))
                             {
                                 x.LookupParameter("Стиль помещений").Set("Санузел");
                                 x.LookupParameter("Кврт.ТипПомещения").Set("2");
@@ -93,32 +93,32 @@ namespace ClassLibrary1
                             {
                                 switch (famname)
                                 {
-                                    case Kitchen:
+                                    case Stove:
                                         x.LookupParameter("Стиль помещений").Set("Кухня");
                                         x.LookupParameter("Кврт.ТипПомещения").Set("2");
                                         x.LookupParameter("Кврт.КоэффициентПлощади").Set("1");
                                         break;
-                                    case Bedroom:
+                                    case Bed:
                                         x.LookupParameter("Стиль помещений").Set("Спальня");
                                         x.LookupParameter("Кврт.ТипПомещения").Set("1");
                                         x.LookupParameter("Кврт.КоэффициентПлощади").Set("1");
                                         break;
-                                    case LivingRoom:
+                                    case Sofa:
                                         x.LookupParameter("Стиль помещений").Set("Гостиная");
                                         x.LookupParameter("Кврт.ТипПомещения").Set("1");
                                         x.LookupParameter("Кврт.КоэффициентПлощади").Set("1");
                                         break;
-                                    case Hall:
+                                    case Shield:
                                         x.LookupParameter("Стиль помещений").Set("Холл");
                                         x.LookupParameter("Кврт.ТипПомещения").Set("2");
                                         x.LookupParameter("Кврт.КоэффициентПлощади").Set("1");
                                         break;
-                                    case Loggia:
+                                    case Conditioner:
                                         x.LookupParameter("Стиль помещений").Set("Лоджия");
                                         x.LookupParameter("Кврт.ТипПомещения").Set("3");
                                         x.LookupParameter("Кврт.КоэффициентПлощади").Set("0,5");
                                         break;
-                                    case Bathroom:
+                                    case Bath:
                                         x.LookupParameter("Стиль помещений").Set("Ванная");
                                         x.LookupParameter("Кврт.ТипПомещения").Set("2");
                                         x.LookupParameter("Кврт.КоэффициентПлощади").Set("1");
