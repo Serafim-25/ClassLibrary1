@@ -123,7 +123,7 @@ namespace ClassLibrary1
                                         x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
                                         break;
                                     case Bed:
-                                        x.LookupParameter("Стиль помещений").Set(dict["Спальня"]);
+                                        x.LookupParameter("Стиль помещений").Set(dict["Спальня1"]);
                                         x.LookupParameter("Кврт.ТипПомещения").Set(1);
                                         x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
                                         break;
