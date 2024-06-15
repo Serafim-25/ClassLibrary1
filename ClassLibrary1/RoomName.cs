@@ -72,7 +72,7 @@ namespace ClassLibrary1
                     .ToList();
 
                 var dict = new Dictionary<string, ElementId>();
-                foreach (var id in listElementIds)
+                foreach (var id in listKeyElementIds)
                 {
                     dict.Add(doc.GetElement(id).Name, id);
                 }
@@ -108,7 +108,7 @@ namespace ClassLibrary1
 
                             if (famnames.Contains(Bath) && famnames.Contains(Toilet))
                             {
-                                x.LookupParameter("Стиль помещений").Set(dic["Санузел"]);
+                                x.LookupParameter("Стиль помещений").Set(dict["Санузел"]);
                                 x.LookupParameter("Кврт.ТипПомещения").Set(2);
                                 x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
                             }
@@ -117,37 +117,37 @@ namespace ClassLibrary1
                                 switch (famname)
                                 {
                                     case Stove:
-                                        x.LookupParameter("Стиль помещений").Set(dic["Кухня"]);
+                                        x.LookupParameter("Стиль помещений").Set(dict["Кухня"]);
                                         x.LookupParameter("Кврт.ТипПомещения").Set(2);
                                         x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
                                         break;
                                     case Bed:
-                                        x.LookupParameter("Стиль помещений").Set(dic["Спальня"]);
+                                        x.LookupParameter("Стиль помещений").Set(dict["Спальня"]);
                                         x.LookupParameter("Кврт.ТипПомещения").Set(1);
                                         x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
                                         break;
                                     case Sofa:
-                                        x.LookupParameter("Стиль помещений").Set(dic["Гостиная"]);
+                                        x.LookupParameter("Стиль помещений").Set(dict["Гостиная"]);
                                         x.LookupParameter("Кврт.ТипПомещения").Set(1);
                                         x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
                                         break;
                                     case Shield:
-                                        x.LookupParameter("Стиль помещений").Set(dic["Холл"]);
+                                        x.LookupParameter("Стиль помещений").Set(dict["Холл"]);
                                         x.LookupParameter("Кврт.ТипПомещения").Set(2);
                                         x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
                                         break;
                                     case Conditioner:
-                                        x.LookupParameter("Стиль помещений").Set(dic["Лоджия"]);
+                                        x.LookupParameter("Стиль помещений").Set(dict["Лоджия"]);
                                         x.LookupParameter("Кврт.ТипПомещения").Set(3);
                                         x.LookupParameter("Кврт.КоэффициентПлощади").Set(0.5);
                                         break;
                                     case Bath:
-                                        x.LookupParameter("Стиль помещений").Set(dic["Ванная"]);
+                                        x.LookupParameter("Стиль помещений").Set(dict["Ванная"]);
                                         x.LookupParameter("Кврт.ТипПомещения").Set(2);
                                         x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
                                         break;
                                     case Toilet:
-                                        x.LookupParameter("Стиль помещений").Set(dic["Туалет"]);
+                                        x.LookupParameter("Стиль помещений").Set(dict["Туалет"]);
                                         x.LookupParameter("Кврт.ТипПомещения").Set(2);
                                         x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
                                         break;
@@ -155,7 +155,7 @@ namespace ClassLibrary1
                             }
                             if (x.Name.Contains("Помещение"))
                             {
-                                x.LookupParameter("Стиль помещений").Set(dic["Коридор"]);
+                                x.LookupParameter("Стиль помещений").Set(dict["Коридор"]);
                                 x.LookupParameter("Кврт.ТипПомещения").Set(2);
                                 x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
                             }
