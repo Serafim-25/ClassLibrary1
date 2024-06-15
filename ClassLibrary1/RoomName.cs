@@ -25,6 +25,7 @@ namespace ClassLibrary1
         public const string Conditioner = "GS_500_Кондиционер";
         public const string Bath = "GS_620_Ванна стальная эмалированная";
         public const string Toilet = "GS_620_Унитаз керамический компакт";
+        public const string Wardrobe = "Шкаф";
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
@@ -151,9 +152,14 @@ namespace ClassLibrary1
                                         x.LookupParameter("Кврт.ТипПомещения").Set(2);
                                         x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
                                         break;
+                                    case Wardrobe:
+                                        x.LookupParameter("Стиль помещений").Set(dict["Гардеробная1"]);
+                                        x.LookupParameter("Кврт.ТипПомещения").Set(2);
+                                        x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
+                                        break;
                                 }
                             }
-                            if (x.Name.Contains("Помещение"))
+                            if (x.Name.Contains("Выход из подвала"))
                             {
                                 x.LookupParameter("Стиль помещений").Set(dict["Коридор"]);
                                 x.LookupParameter("Кврт.ТипПомещения").Set(2);
