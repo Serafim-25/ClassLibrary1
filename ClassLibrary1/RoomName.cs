@@ -147,7 +147,7 @@ namespace ClassLibrary1
                                         x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
                                         break;
                                     case Toilet:
-                                        x.LookupParameter("Стиль помещений").Set(dict["Туалет"]);
+                                        x.LookupParameter("Стиль помещений").Set(dict["Туалет1"]);
                                         x.LookupParameter("Кврт.ТипПомещения").Set(2);
                                         x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
                                         break;
