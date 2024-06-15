@@ -41,13 +41,13 @@ namespace ClassLibrary1
             var doc = uiDoc.Document;
 
             // создаем список уровней
-            List<Level> level = new FilteredElementCollector(doc)
+            List<Level> levels = new FilteredElementCollector(doc)
                 .OfClass(typeof(Level))
                 .OfCategory(BuiltInCategory.OST_Levels)
                 .Cast<Level>()
                 .ToList();
 
-            for (int j = 0; j < level.Count; j++)
+            foreach (Level lvl in levels)
             {
                 //создаем список помещений без имени на уровне j
                
@@ -112,6 +112,7 @@ namespace ClassLibrary1
                                 x.LookupParameter("Стиль помещений").Set(dict["Совмещенный санузел1"]);
                                 x.LookupParameter("Кврт.ТипПомещения").Set(2);
                                 x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
+                                break;
                             }
                             else
                             {
@@ -164,6 +165,7 @@ namespace ClassLibrary1
                                 x.LookupParameter("Стиль помещений").Set(dict["Коридор"]);
                                 x.LookupParameter("Кврт.ТипПомещения").Set(2);
                                 x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
+                                break;
                             }
                         }
                     }
