@@ -49,10 +49,33 @@ namespace ClassLibrary1
             for (int j = 0; j < level.Count; j++)
             {
                 //создаем список помещений без имени на уровне j
+               
                 var rooms = new FilteredElementCollector(doc)
-                .OfCategory(BuiltInCategory.OST_Rooms)
-                .Where(nameof => nameof.Name.Contains("Помещение"))
+                .OfClass(typeof(SpatialElement)).Cast<SpatialElement>()
+                .Where(it => it.SpatialElementType == SpatialElementType.Room)
+                .Cast<Room>()
                 .ToList();
+
+                // Дастаем спецификацию с ключем для помещений, а именно с ключом "Стиль помещений"
+                var viewKeySchedule = new FilteredElementCollector(doc)
+                .OfClass(typeof(ViewSchedule)).Cast<ViewSchedule>()
+                .Where(it => it.Name == "АР_Спецификация стилей помещений")
+                .First();
+
+                // Делаем список ID всех объектов, которые связаны со спецификацией
+                var listElementIds = viewKeySchedule.GetDependentElements(null).ToList();
+
+                // Фильтруем список и оставляем только ID всех Element-ключей
+                var listKeyElementIds = listElementIds.Where(it => doc.GetElement(it).GetType() == typeof(Element)
+                    && doc.GetElement(it).Name != "АР_Спецификация стилей помещений"
+                    && doc.GetElement(it).Name != "")
+                    .ToList();
+
+                var dic = new Dictionary<string, ElementId>();
+                foreach (var id in listElementIds)
+                {
+                    dic.Add(doc.GetElement(id).Name, id);
+                }
 
                 using (Transaction transaction = new Transaction(doc))
                 {
@@ -85,56 +108,56 @@ namespace ClassLibrary1
 
                             if (famnames.Contains(Bath) && famnames.Contains(Toilet))
                             {
-                                x.LookupParameter("Стиль помещений").Set("Санузел");
-                                x.LookupParameter("Кврт.ТипПомещения").Set("2");
-                                x.LookupParameter("Кврт.КоэффициентПлощади").Set("1");
+                                x.LookupParameter("Стиль помещений").Set(dic["Санузел"]);
+                                x.LookupParameter("Кврт.ТипПомещения").Set(2);
+                                x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
                             }
                             else
                             {
                                 switch (famname)
                                 {
                                     case Stove:
-                                        x.LookupParameter("Стиль помещений").Set("Кухня");
-                                        x.LookupParameter("Кврт.ТипПомещения").Set("2");
-                                        x.LookupParameter("Кврт.КоэффициентПлощади").Set("1");
+                                        x.LookupParameter("Стиль помещений").Set(dic["Кухня"]);
+                                        x.LookupParameter("Кврт.ТипПомещения").Set(2);
+                                        x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
                                         break;
                                     case Bed:
-                                        x.LookupParameter("Стиль помещений").Set("Спальня");
-                                        x.LookupParameter("Кврт.ТипПомещения").Set("1");
-                                        x.LookupParameter("Кврт.КоэффициентПлощади").Set("1");
+                                        x.LookupParameter("Стиль помещений").Set(dic["Спальня"]);
+                                        x.LookupParameter("Кврт.ТипПомещения").Set(1);
+                                        x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
                                         break;
                                     case Sofa:
-                                        x.LookupParameter("Стиль помещений").Set("Гостиная");
-                                        x.LookupParameter("Кврт.ТипПомещения").Set("1");
-                                        x.LookupParameter("Кврт.КоэффициентПлощади").Set("1");
+                                        x.LookupParameter("Стиль помещений").Set(dic["Гостиная"]);
+                                        x.LookupParameter("Кврт.ТипПомещения").Set(1);
+                                        x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
                                         break;
                                     case Shield:
-                                        x.LookupParameter("Стиль помещений").Set("Холл");
-                                        x.LookupParameter("Кврт.ТипПомещения").Set("2");
-                                        x.LookupParameter("Кврт.КоэффициентПлощади").Set("1");
+                                        x.LookupParameter("Стиль помещений").Set(dic["Холл"]);
+                                        x.LookupParameter("Кврт.ТипПомещения").Set(2);
+                                        x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
                                         break;
                                     case Conditioner:
-                                        x.LookupParameter("Стиль помещений").Set("Лоджия");
-                                        x.LookupParameter("Кврт.ТипПомещения").Set("3");
-                                        x.LookupParameter("Кврт.КоэффициентПлощади").Set("0,5");
+                                        x.LookupParameter("Стиль помещений").Set(dic["Лоджия"]);
+                                        x.LookupParameter("Кврт.ТипПомещения").Set(3);
+                                        x.LookupParameter("Кврт.КоэффициентПлощади").Set(0.5);
                                         break;
                                     case Bath:
-                                        x.LookupParameter("Стиль помещений").Set("Ванная");
-                                        x.LookupParameter("Кврт.ТипПомещения").Set("2");
-                                        x.LookupParameter("Кврт.КоэффициентПлощади").Set("1");
+                                        x.LookupParameter("Стиль помещений").Set(dic["Ванная"]);
+                                        x.LookupParameter("Кврт.ТипПомещения").Set(2);
+                                        x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
                                         break;
                                     case Toilet:
-                                        x.LookupParameter("Стиль помещений").Set("Туалет");
-                                        x.LookupParameter("Кврт.ТипПомещения").Set("2");
-                                        x.LookupParameter("Кврт.КоэффициентПлощади").Set("1");
+                                        x.LookupParameter("Стиль помещений").Set(dic["Туалет"]);
+                                        x.LookupParameter("Кврт.ТипПомещения").Set(2);
+                                        x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
                                         break;
                                 }
                             }
                             if (x.Name.Contains("Помещение"))
                             {
-                                x.LookupParameter("Стиль помещений").Set("Коридор");
-                                x.LookupParameter("Кврт.ТипПомещения").Set("2");
-                                x.LookupParameter("Кврт.КоэффициентПлощади").Set("1");
+                                x.LookupParameter("Стиль помещений").Set(dic["Коридор"]);
+                                x.LookupParameter("Кврт.ТипПомещения").Set(2);
+                                x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
                             }
                         }
                     }
