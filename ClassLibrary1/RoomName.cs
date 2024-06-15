@@ -10,6 +10,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.UI;
+using Autodesk.Revit.UI.Selection;
 using Document = Autodesk.Revit.DB.Document;
 
 namespace ClassLibrary1
@@ -41,11 +42,19 @@ namespace ClassLibrary1
             var doc = uiDoc.Document;
 
             // создаем список уровней
-            List<Level> levels = new FilteredElementCollector(doc)
-                .OfClass(typeof(Level))
-                .OfCategory(BuiltInCategory.OST_Levels)
-                .Cast<Level>()
-                .ToList();
+            //List<Level> levels = new FilteredElementCollector(doc)
+            //    .OfClass(typeof(Level))
+            //    .OfCategory(BuiltInCategory.OST_Levels)
+            //    .Cast<Level>()
+            //    .ToList();
+
+            LevelsPicker levelsPicker = new LevelsPicker();
+            IList<Reference> levelsRefs = uiDoc.Selection.PickObjects(ObjectType.Element, levelsPicker, "Выберите уровни");
+            List<Level> levels = new List<Level>();
+            for (int j = 0; j < levelsRefs.Count; j++)
+            {
+                levels.Add(doc.GetElement(levelsRefs[j]) as Level);
+            }
 
             foreach (Level lvl in levels)
             {
@@ -112,7 +121,7 @@ namespace ClassLibrary1
                                 x.LookupParameter("Стиль помещений").Set(dict["Совмещенный санузел1"]);
                                 x.LookupParameter("Кврт.ТипПомещения").Set(2);
                                 x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
-                                break;
+                                //break;
                             }
                             else
                             {
@@ -158,7 +167,13 @@ namespace ClassLibrary1
                                         x.LookupParameter("Кврт.ТипПомещения").Set(2);
                                         x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
                                         break;
+                                    //default:
+                                    //    x.LookupParameter("Стиль помещений").Set(dict["Коридор"]);
+                                    //    x.LookupParameter("Кврт.ТипПомещения").Set(2);
+                                    //    x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
+                                    //    break;
                                 }
+                                //break;
                             }
                             if (x.Name.Contains("Выход из подвала"))
                             {
