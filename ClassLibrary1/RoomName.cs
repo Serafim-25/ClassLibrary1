@@ -71,10 +71,10 @@ namespace ClassLibrary1
                     && doc.GetElement(it).Name != "")
                     .ToList();
 
-                var dic = new Dictionary<string, ElementId>();
+                var dict = new Dictionary<string, ElementId>();
                 foreach (var id in listElementIds)
                 {
-                    dic.Add(doc.GetElement(id).Name, id);
+                    dict.Add(doc.GetElement(id).Name, id);
                 }
 
                 using (Transaction transaction = new Transaction(doc))
