@@ -108,7 +108,7 @@ namespace ClassLibrary1
 
                             if (famnames.Contains(Bath) && famnames.Contains(Toilet))
                             {
-                                x.LookupParameter("Стиль помещений").Set(dict["Санузел"]);
+                                x.LookupParameter("Стиль помещений").Set(dict["Совмещенный санузел1"]);
                                 x.LookupParameter("Кврт.ТипПомещения").Set(2);
                                 x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
                             }
@@ -137,7 +137,7 @@ namespace ClassLibrary1
                                         x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
                                         break;
                                     case Conditioner:
-                                        x.LookupParameter("Стиль помещений").Set(dict["Лоджия"]);
+                                        x.LookupParameter("Стиль помещений").Set(dict["Лоджия1"]);
                                         x.LookupParameter("Кврт.ТипПомещения").Set(3);
                                         x.LookupParameter("Кврт.КоэффициентПлощади").Set(0.5);
                                         break;
