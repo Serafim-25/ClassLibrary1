@@ -27,6 +27,7 @@ namespace ClassLibrary1
         public const string Bath = "GS_620_Ванна стальная эмалированная";
         public const string Toilet = "GS_620_Унитаз керамический компакт";
         public const string Wardrobe = "Шкаф";
+        public const string Shower = "GS_620_Душевой поддон угловой";
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
@@ -116,7 +117,7 @@ namespace ClassLibrary1
                             string famname = ftype.FamilyName;
                             famnames.Add(famname);
 
-                            if (famnames.Contains(Bath) && famnames.Contains(Toilet))
+                            if ((famnames.Contains(Bath) && famnames.Contains(Toilet)) || (famnames.Contains(Shower) && famnames.Contains(Toilet)))
                             {
                                 x.LookupParameter("Стиль помещений").Set(dict["Совмещенный санузел1"]);
                                 x.LookupParameter("Кврт.ТипПомещения").Set(2);
