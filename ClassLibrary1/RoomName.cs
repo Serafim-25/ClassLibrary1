@@ -168,7 +168,7 @@ namespace ClassLibrary1
                         }
                         else if (famnames.Contains(Conditioner))
                         {
-                            x.LookupParameter("Стиль помещений").Set(dict["Холл"]);
+                            x.LookupParameter("Стиль помещений").Set(dict["Лоджия1"]);
                             x.LookupParameter("Кврт.ТипПомещения").Set(3);
                             x.LookupParameter("Кврт.КоэффициентПлощади").Set(0.5);
                             //break;
@@ -180,7 +180,7 @@ namespace ClassLibrary1
                             x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
                             //break;
                         }
-                        else if (x.Name.Contains("Выход из подвала") && famnames == null)
+                        else if (/*x.Name.Contains("Выход из подвала") && */famnames == null)
                         {
                             x.LookupParameter("Стиль помещений").Set(dict["Коридор"]);
                             x.LookupParameter("Кврт.ТипПомещения").Set(2);
