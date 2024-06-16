@@ -43,19 +43,19 @@ namespace ClassLibrary1
             var doc = uiDoc.Document;
 
             //создаем список уровней
-            List<Level> levels = new FilteredElementCollector(doc)
-                .OfClass(typeof(Level))
-                .OfCategory(BuiltInCategory.OST_Levels)
-                .Cast<Level>()
-                .ToList();
+            //List<Level> levels = new FilteredElementCollector(doc)
+            //    .OfClass(typeof(Level))
+            //    .OfCategory(BuiltInCategory.OST_Levels)
+            //    .Cast<Level>()
+            //    .ToList();
 
-            //LevelsPicker levelsPicker = new LevelsPicker();
-            //IList<Reference> levelsRefs = uiDoc.Selection.PickObjects(ObjectType.Element, levelsPicker, "Выберите уровни");
-            //List<Level> levels = new List<Level>();
-            //for (int j = 0; j < levelsRefs.Count; j++)
-            //{
-            //    levels.Add(doc.GetElement(levelsRefs[j]) as Level);
-            //}
+            LevelsPicker levelsPicker = new LevelsPicker();
+            IList<Reference> levelsRefs = uiDoc.Selection.PickObjects(ObjectType.Element, levelsPicker, "Выберите уровни");
+            List<Level> levels = new List<Level>();
+            for (int j = 0; j < levelsRefs.Count; j++)
+            {
+                levels.Add(doc.GetElement(levelsRefs[j]) as Level);
+            }
 
             foreach (Level lvl in levels)
             {
