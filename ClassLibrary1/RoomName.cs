@@ -49,16 +49,16 @@ namespace ClassLibrary1
             //    .Cast<Level>()
             //    .ToList();
 
-            LevelsPicker levelsPicker = new LevelsPicker();
-            IList<Reference> levelsRefs = uiDoc.Selection.PickObjects(ObjectType.Element, levelsPicker, "Выберите уровни");
-            List<Level> levels = new List<Level>();
-            for (int j = 0; j < levelsRefs.Count; j++)
-            {
-                levels.Add(doc.GetElement(levelsRefs[j]) as Level);
-            }
+            //LevelsPicker levelsPicker = new LevelsPicker();
+            //IList<Reference> levelsRefs = uiDoc.Selection.PickObjects(ObjectType.Element, levelsPicker, "Выберите уровни");
+            //List<Level> levels = new List<Level>();
+            //for (int j = 0; j < levelsRefs.Count; j++)
+            //{
+            //    levels.Add(doc.GetElement(levelsRefs[j]) as Level);
+            //}
 
-            foreach (Level lvl in levels)
-            {
+            //foreach (Level lvl in levels)
+            //{
                 //создаем список помещений без имени на уровне lvl
 
                 var rooms = new FilteredElementCollector(doc)
@@ -180,7 +180,7 @@ namespace ClassLibrary1
                     }
                     transaction.Commit();
                 }
-            }
+            //}
             return Result.Succeeded;
         }
     }
