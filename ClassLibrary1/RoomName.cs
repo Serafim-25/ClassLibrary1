@@ -141,6 +141,12 @@ namespace ClassLibrary1
                             x.LookupParameter("Кврт.ТипПомещения").Set(2);
                             x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
                         }
+                        else if (famnames.Contains(Shield))
+                        {
+                            x.LookupParameter("Стиль помещений").Set(dict["Холл"]);
+                            x.LookupParameter("Кврт.ТипПомещения").Set(2);
+                            x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
+                        }
                         else if (famnames.Contains(Bed))
                         {
                             x.LookupParameter("Стиль помещений").Set(dict["Спальня1"]);
@@ -151,12 +157,6 @@ namespace ClassLibrary1
                         {
                             x.LookupParameter("Стиль помещений").Set(dict["Гостиная"]);
                             x.LookupParameter("Кврт.ТипПомещения").Set(1);
-                            x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
-                        }
-                        else if (famnames.Contains(Shield))
-                        {
-                            x.LookupParameter("Стиль помещений").Set(dict["Холл"]);
-                            x.LookupParameter("Кврт.ТипПомещения").Set(2);
                             x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
                         }
                         else if (famnames.Contains(Conditioner))
@@ -171,7 +171,7 @@ namespace ClassLibrary1
                             x.LookupParameter("Кврт.ТипПомещения").Set(2);
                             x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
                         }
-                        else /*if (x.Name.Contains("Выход из подвала") && famnames == null)*/
+                        else
                         {
                             x.LookupParameter("Стиль помещений").Set(dict["Коридор"]);
                             x.LookupParameter("Кврт.ТипПомещения").Set(2);
