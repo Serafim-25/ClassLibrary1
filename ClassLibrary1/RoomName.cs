@@ -123,7 +123,7 @@ namespace ClassLibrary1
                                 x.LookupParameter("Кврт.ТипПомещения").Set(2);
                                 x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
                             }
-                            else if (famnames != null)
+                            else /*if (famnames != null)*/
                             {
                                 switch (famname)
                                 {
