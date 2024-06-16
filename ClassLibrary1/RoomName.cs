@@ -117,14 +117,13 @@ namespace ClassLibrary1
                             string famname = ftype.FamilyName;
                             famnames.Add(famname);
 
-                            if ((famnames.Contains(Bath) && famnames.Contains(Toilet)) || (famnames.Contains(Shower) && famnames.Contains(Toilet)))
+                            if (famnames.Contains(Bath) && famnames.Contains(Toilet) || (famnames.Contains(Shower) && famnames.Contains(Toilet)))
                             {
                                 x.LookupParameter("Стиль помещений").Set(dict["Совмещенный санузел1"]);
                                 x.LookupParameter("Кврт.ТипПомещения").Set(2);
                                 x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
-                                //break;
                             }
-                            else
+                            else if (famnames != null)
                             {
                                 switch (famname)
                                 {
@@ -168,21 +167,20 @@ namespace ClassLibrary1
                                         x.LookupParameter("Кврт.ТипПомещения").Set(2);
                                         x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
                                         break;
-                                    //default:
-                                    //    x.LookupParameter("Стиль помещений").Set(dict["Коридор"]);
-                                    //    x.LookupParameter("Кврт.ТипПомещения").Set(2);
-                                    //    x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
-                                    //    break;
+                                    case null:
+                                        x.LookupParameter("Стиль помещений").Set(dict["Коридор"]);
+                                        x.LookupParameter("Кврт.ТипПомещения").Set(2);
+                                        x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
+                                        break;
                                 }
-                                //break;
                             }
-                            if (x.Name.Contains("Выход из подвала"))
-                            {
-                                x.LookupParameter("Стиль помещений").Set(dict["Коридор"]);
-                                x.LookupParameter("Кврт.ТипПомещения").Set(2);
-                                x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
-                                break;
-                            }
+                            //else if (x.Name.Contains("Выход из подвала") && famnames == null)
+                            //{
+                            //    x.LookupParameter("Стиль помещений").Set(dict["Коридор"]);
+                            //    x.LookupParameter("Кврт.ТипПомещения").Set(2);
+                            //    x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
+                            //    break;
+                            //}
                         }
                     }
                     transaction.Commit();
