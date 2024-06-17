@@ -100,7 +100,7 @@ namespace ClassLibrary1
                                     paramForClean.SetValueString("");
                                     if (paramForClean.Definition.Name == nameRoomStyle)
                                     {
-                                        paramForClean.Set(listKeyElementIds[1]);
+                                        paramForClean.Set(listKeyElementIds[11]);
                                     }
                                     counter++;
                                     break;
