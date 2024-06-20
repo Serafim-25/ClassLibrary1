@@ -41,6 +41,7 @@ namespace ClassLibrary1
             string nameAreaCoefficient = "Кврт.КоэффициентПлощади";
             string nameRoomType = "Кврт.ТипПомещения";
             string nameRoomStyle = "Стиль помещений";
+            string nameRoomNumber = "Номер";
 
             // Создание списка помещений            
             var rooms = new FilteredElementCollector(doc)
@@ -60,7 +61,8 @@ namespace ClassLibrary1
                     nameType,
                     nameAreaCoefficient,
                     nameRoomType,
-                    nameRoomStyle
+                    nameRoomStyle,
+                    nameRoomNumber
                 };
 
             // Дастаем спецификацию с ключем для помещений, а именно с ключом "Стиль помещений"
@@ -95,8 +97,8 @@ namespace ClassLibrary1
                             {
                                 if (paramForClean.Definition.Name == nameParam)
                                 {
+                                    paramForClean.Set(0); 
                                     paramForClean.Set("");
-                                    paramForClean.Set(0);
                                     paramForClean.SetValueString("");
                                     if (paramForClean.Definition.Name == nameRoomStyle)
                                     {
