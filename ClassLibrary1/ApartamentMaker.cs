@@ -18,7 +18,12 @@ namespace ClassLibrary1
             UIDocument uIDocument = commandData.Application.ActiveUIDocument;
             Document document = uIDocument.Document;
             LevelsPicker levelsPicker = new LevelsPicker();
-            IList<Reference> levelsRefs = uIDocument.Selection.PickObjects(ObjectType.Element, levelsPicker, "Выберите уровни");
+            IList<Reference> levelsRefs = new List<Reference>();
+            try
+            {
+                levelsRefs = uIDocument.Selection.PickObjects(ObjectType.Element, levelsPicker, "Выберите уровни");
+            }
+            catch (OperationCanceledException e) { return Result.Failed; }
             List<Level> levels = new List<Level>();
             for (int j = 0; j < levelsRefs.Count; j++)
             {
@@ -29,28 +34,34 @@ namespace ClassLibrary1
             TaskDialog.Show("Заголовок", "Начало команды");
             string nameApartmentPlaceType = "Кврт.ТипПомещения";
             string nameApartmentNumber = "Кврт.НомерКвартиры";
-            //string nameApartmentArea = "Кврт.ПлощадьКвартиры";
-            //string nameApartmentAreaResidential = "Кврт.ПлощадьКвартирыЖилая";
-            //string nameApartmentAreaGeneral = "Кврт.ПлощадьКвартирыОбщая";
-            //string nameApartmentNumberRooms = "Кврт.ЧислоКомнат";
-            //string nameApartmentRoomIndex = "Кврт.ИндексПомещения";
             string namePublicСorridor = "Межквартирный коридор";
             string nameHall = "Лифтовой холл";
             SpatialElement hall = null;
             SpatialElement publicСorridor = null;
             int currentNumberApartment = 1;
             const int numberNonResidentialPremises = 5;
-            //комментарий
-            //ком2
+
             foreach (Level lvl in levels)
             {
                 lvlMinApartNumb[lvl] = currentNumberApartment;
                 Dictionary<string, List<SpatialElement>> ApartmentsRooms = new Dictionary<string, List<SpatialElement>>();
                 Dictionary<string, nUV> Apartments = new Dictionary<string, nUV>(); // номер кв. и координата центра
                 Dictionary<string, Dictionary<nUV, double>> ApartmentsPreliminary = new Dictionary<string, Dictionary<nUV, double>>(); // номер кв. и коорд<->площадь
-                List<SpatialElement> rooms = new FilteredElementCollector(document).OfClass(typeof(SpatialElement)).Cast<SpatialElement>().Where(it => it.Level.Id.Equals(lvl.Id) && it.SpatialElementType == SpatialElementType.Room).ToList();
-                List<FamilyInstance> windows = new FilteredElementCollector(document).OfClass(typeof(FamilyInstance)).OfCategory(BuiltInCategory.OST_Windows).Cast<FamilyInstance>().Where(it => it.LevelId.Equals(lvl.Id) && it.ToRoom != null && it.FromRoom != null).ToList();
-                List<FamilyInstance> doors = new FilteredElementCollector(document).OfClass(typeof(FamilyInstance)).OfCategory(BuiltInCategory.OST_Doors).Cast<FamilyInstance>().Where(it => it.LevelId.Equals(lvl.Id) && it.ToRoom != null && it.FromRoom != null).ToList();
+                List<SpatialElement> rooms = new FilteredElementCollector(document).OfClass(typeof(SpatialElement))
+                                                                                   .Cast<SpatialElement>()
+                                                                                   .Where(it => it.Level.Id
+                                                                                   .Equals(lvl.Id) && it.SpatialElementType == SpatialElementType.Room)
+                                                                                   .ToList();
+                List<FamilyInstance> windows = new FilteredElementCollector(document).OfClass(typeof(FamilyInstance))
+                                                                                     .OfCategory(BuiltInCategory.OST_Windows)
+                                                                                     .Cast<FamilyInstance>()
+                                                                                     .Where(it => it.LevelId.Equals(lvl.Id) && it.ToRoom != null && it.FromRoom != null)
+                                                                                     .ToList();
+                List<FamilyInstance> doors = new FilteredElementCollector(document).OfClass(typeof(FamilyInstance))
+                                                                                   .OfCategory(BuiltInCategory.OST_Doors)
+                                                                                   .Cast<FamilyInstance>().Where(it => it.LevelId
+                                                                                   .Equals(lvl.Id) && it.ToRoom != null && it.FromRoom != null)
+                                                                                   .ToList();
                 List<FamilyInstance> opening = new List<FamilyInstance>();
                 Dictionary<ElementId, Parameter[]> roomsDict = new Dictionary<ElementId, Parameter[]>();
                 List<SpatialElement> nonResidentialPremisesRooms = new List<SpatialElement>();
@@ -76,7 +87,6 @@ namespace ClassLibrary1
                     }
                     try
                     {
-
                         for (int u = 0; u < rooms.Count; u++)
                         {
                             if (roomsDict[rooms[u].Id][0].AsInteger() != numberNonResidentialPremises && roomsDict[rooms[u].Id][1].AsString() == string.Empty)
@@ -113,7 +123,6 @@ namespace ClassLibrary1
                     }
                     transaction.Commit();
                 }
-                //TaskDialog.Show("Заголовок", "Конец транзакции");
                 foreach (var roomm in rooms)
                 {
                     Room room = roomm as Room;
