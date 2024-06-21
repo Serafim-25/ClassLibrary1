@@ -42,47 +42,31 @@ namespace ClassLibrary1
             var uiDoc = commandData.Application.ActiveUIDocument;
             var doc = uiDoc.Document;
 
-            //создаем список уровней
-            //List<Level> levels = new FilteredElementCollector(doc)
-            //    .OfClass(typeof(Level))
-            //    .OfCategory(BuiltInCategory.OST_Levels)
-            //    .Cast<Level>()
-            //    .ToList();
+            string valueAppointmentRoomLiving = "Жилое помещение";
 
-            //LevelsPicker levelsPicker = new LevelsPicker();
-            //IList<Reference> levelsRefs = uiDoc.Selection.PickObjects(ObjectType.Element, levelsPicker, "Выберите уровни");
-            //List<Level> levels = new List<Level>();
-            //for (int j = 0; j < levelsRefs.Count; j++)
-            //{
-            //    levels.Add(doc.GetElement(levelsRefs[j]) as Level);
-            //}
-
-            //foreach (Level lvl in levels)
-            //{
-                //создаем список помещений без имени на уровне lvl
-
-                var rooms = new FilteredElementCollector(doc)
+            var rooms = new FilteredElementCollector(doc)
                 .OfClass(typeof(SpatialElement)).Cast<SpatialElement>()
                 .Where(it => it.SpatialElementType == SpatialElementType.Room)
+                .Where(it => it.Parameters.AsString() == valueAppointmentRoomLiving)
                 .Cast<Room>()
                 .ToList();
 
                 // Дастаем спецификацию с ключем для помещений, а именно с ключом "Стиль помещений"
-                var viewKeySchedule = new FilteredElementCollector(doc)
+            var viewKeySchedule = new FilteredElementCollector(doc)
                 .OfClass(typeof(ViewSchedule)).Cast<ViewSchedule>()
                 .Where(it => it.Name == "АР_Спецификация стилей помещений")
                 .First();
 
                 // Делаем список ID всех объектов, которые связаны со спецификацией
-                var listElementIds = viewKeySchedule.GetDependentElements(null).ToList();
+            var listElementIds = viewKeySchedule.GetDependentElements(null).ToList();
 
                 // Фильтруем список и оставляем только ID всех Element-ключей
-                var listKeyElementIds = listElementIds.Where(it => doc.GetElement(it).GetType() == typeof(Element)
-                    && doc.GetElement(it).Name != "АР_Спецификация стилей помещений"
-                    && doc.GetElement(it).Name != "")
-                    .ToList();
+            var listKeyElementIds = listElementIds.Where(it => doc.GetElement(it).GetType() == typeof(Element)
+                && doc.GetElement(it).Name != "АР_Спецификация стилей помещений"
+                && doc.GetElement(it).Name != "")
+                .ToList();
 
-                var dict = new Dictionary<string, ElementId>();
+            var dict = new Dictionary<string, ElementId>();
                 foreach (var id in listKeyElementIds)
                 {
                     dict.Add(doc.GetElement(id).Name, id);
