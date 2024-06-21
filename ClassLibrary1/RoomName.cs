@@ -78,93 +78,91 @@ namespace ClassLibrary1
                     foreach (Room x in rooms)
                     {
                         var parameterSet = x.Parameters;
-                        foreach (Parameter param in parameterSet)
+
+                        //создаем список мебели в комнате и проверяем принадлежит ли она данной комнате
+                        BoundingBoxXYZ bb = x.get_BoundingBox(null);
+
+                        Outline outline = new Outline(bb.Min, bb.Max);
+
+                        BoundingBoxIntersectsFilter filter
+                        = new BoundingBoxIntersectsFilter(outline);
+
+                        var furniture = new FilteredElementCollector(doc)
+                            .OfClass(typeof(FamilyInstance))
+                            .WherePasses(filter)
+                            .ToList();
+
+                        List<string> famnames = new List<string>(); //список имен семейств
+
+                        foreach (var f in furniture)
                         {
-                            if (param.AsString() == valueAppointmentRoomLiving)
+                            FamilyInstance finstance = f as FamilyInstance;
+                            FamilySymbol ftype = finstance.Symbol;
+                            string famname = ftype.FamilyName;
+                            famnames.Add(famname);
+                        }
+
+                        if (famnames.Contains(Bath) && famnames.Contains(Toilet) || (famnames.Contains(Shower) && famnames.Contains(Toilet)))
+                        {
+                            x.LookupParameter("Стиль помещений").Set(dict["Совмещенный санузел1"]);
+                            x.LookupParameter("Кврт.ТипПомещения").Set(2);
+                            x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
+                        }
+                        else if (famnames.Contains(Bath))
+                        {
+                            x.LookupParameter("Стиль помещений").Set(dict["Ванная"]);
+                            x.LookupParameter("Кврт.ТипПомещения").Set(2);
+                            x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
+                        }
+                        else if (famnames.Contains(Toilet))
+                        {
+                            x.LookupParameter("Стиль помещений").Set(dict["Туалет1"]);
+                            x.LookupParameter("Кврт.ТипПомещения").Set(2);
+                            x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
+                        }
+                        else if (famnames.Contains(Stove))
+                        {
+                            x.LookupParameter("Стиль помещений").Set(dict["Кухня"]);
+                            x.LookupParameter("Кврт.ТипПомещения").Set(2);
+                            x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
+                        }
+                        else if (famnames.Contains(Shield))
+                        {
+                            x.LookupParameter("Стиль помещений").Set(dict["Холл"]);
+                            x.LookupParameter("Кврт.ТипПомещения").Set(2);
+                            x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
+                        }
+                        else if (famnames.Contains(Bed))
+                        {
+                            x.LookupParameter("Стиль помещений").Set(dict["Спальня1"]);
+                            x.LookupParameter("Кврт.ТипПомещения").Set(1);
+                            x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
+                        }   
+                        else if (famnames.Contains(Sofa))
+                        {
+                            x.LookupParameter("Стиль помещений").Set(dict["Гостиная"]);
+                            x.LookupParameter("Кврт.ТипПомещения").Set(1);
+                            x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
+                        }
+                        else if (famnames.Contains(Conditioner))
+                        {
+                            x.LookupParameter("Стиль помещений").Set(dict["Лоджия1"]);
+                            x.LookupParameter("Кврт.ТипПомещения").Set(3);
+                            x.LookupParameter("Кврт.КоэффициентПлощади").Set(0.5);
+                        }
+                        else if (famnames.Contains(Wardrobe))
+                        {
+                            x.LookupParameter("Стиль помещений").Set(dict["Гардеробная1"]);
+                            x.LookupParameter("Кврт.ТипПомещения").Set(2);
+                            x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
+                        }
+                        else
+                        {
+                            if (x.Parameters.ToString() == valueAppointmentRoomLiving)
                             {
-                                //создаем список мебели в комнате и проверяем принадлежит ли она данной комнате
-                                BoundingBoxXYZ bb = x.get_BoundingBox(null);
-
-                                Outline outline = new Outline(bb.Min, bb.Max);
-
-                                BoundingBoxIntersectsFilter filter
-                                = new BoundingBoxIntersectsFilter(outline);
-
-                                var furniture = new FilteredElementCollector(doc)
-                                    .OfClass(typeof(FamilyInstance))
-                                    .WherePasses(filter)
-                                    .ToList();
-
-                                List<string> famnames = new List<string>(); //список имен семейств
-
-                                foreach (var f in furniture)
-                                {
-                                    FamilyInstance finstance = f as FamilyInstance;
-                                    FamilySymbol ftype = finstance.Symbol;
-                                    string famname = ftype.FamilyName;
-                                    famnames.Add(famname);
-                                }
-
-                                if (famnames.Contains(Bath) && famnames.Contains(Toilet) || (famnames.Contains(Shower) && famnames.Contains(Toilet)))
-                                {
-                                    x.LookupParameter("Стиль помещений").Set(dict["Совмещенный санузел1"]);
-                                    x.LookupParameter("Кврт.ТипПомещения").Set(2);
-                                    x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
-                                }
-                                else if (famnames.Contains(Bath))
-                                {
-                                    x.LookupParameter("Стиль помещений").Set(dict["Ванная"]);
-                                    x.LookupParameter("Кврт.ТипПомещения").Set(2);
-                                    x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
-                                }
-                                else if (famnames.Contains(Toilet))
-                                {
-                                    x.LookupParameter("Стиль помещений").Set(dict["Туалет1"]);
-                                    x.LookupParameter("Кврт.ТипПомещения").Set(2);
-                                    x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
-                                }
-                                else if (famnames.Contains(Stove))
-                                {
-                                    x.LookupParameter("Стиль помещений").Set(dict["Кухня"]);
-                                    x.LookupParameter("Кврт.ТипПомещения").Set(2);
-                                    x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
-                                }
-                                else if (famnames.Contains(Shield))
-                                {
-                                    x.LookupParameter("Стиль помещений").Set(dict["Холл"]);
-                                    x.LookupParameter("Кврт.ТипПомещения").Set(2);
-                                    x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
-                                }
-                                else if (famnames.Contains(Bed))
-                                {
-                                    x.LookupParameter("Стиль помещений").Set(dict["Спальня1"]);
-                                    x.LookupParameter("Кврт.ТипПомещения").Set(1);
-                                    x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
-                                }
-                                else if (famnames.Contains(Sofa))
-                                {
-                                    x.LookupParameter("Стиль помещений").Set(dict["Гостиная"]);
-                                    x.LookupParameter("Кврт.ТипПомещения").Set(1);
-                                    x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
-                                }
-                                else if (famnames.Contains(Conditioner))
-                                {
-                                    x.LookupParameter("Стиль помещений").Set(dict["Лоджия1"]);
-                                    x.LookupParameter("Кврт.ТипПомещения").Set(3);
-                                    x.LookupParameter("Кврт.КоэффициентПлощади").Set(0.5);
-                                }
-                                else if (famnames.Contains(Wardrobe))
-                                {
-                                    x.LookupParameter("Стиль помещений").Set(dict["Гардеробная1"]);
-                                    x.LookupParameter("Кврт.ТипПомещения").Set(2);
-                                    x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
-                                }
-                                else
-                                {
-                                    x.LookupParameter("Стиль помещений").Set(dict["Коридор"]);
-                                    x.LookupParameter("Кврт.ТипПомещения").Set(2);
-                                    x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
-                                }
+                                x.LookupParameter("Стиль помещений").Set(dict["Коридор"]);
+                                x.LookupParameter("Кврт.ТипПомещения").Set(2);
+                                x.LookupParameter("Кврт.КоэффициентПлощади").Set(1);
                             }
                         }
 
