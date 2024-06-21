@@ -123,6 +123,7 @@ namespace ClassLibrary1
                     }
                     transaction.Commit();
                 }
+
                 foreach (var roomm in rooms)
                 {
                     Room room = roomm as Room;
@@ -182,7 +183,7 @@ namespace ClassLibrary1
                 {
                     if (AboveLine(hallPoint, publicCorridorPoint, t) == sign) { uvs.Add(t); }
                 }
-                UV firstApartmentPoint = MostPerpendicular(hallPoint, publicCorridorPoint, uvs);
+                UV firstApartmentPoint = Closest(hallPoint, uvs);
                 for (int i = 0; i < orderedPoints.Length; i++)
                 {
                     if (orderedPoints[i] == firstApartmentPoint)
@@ -195,7 +196,7 @@ namespace ClassLibrary1
                     ParameterSet parSet = rooms[i].Parameters;
                     foreach (Parameter para in parSet)
                     {
-                        if (para.IsShared && para.Definition.Name == nameApartmentNumber && para.AsString().Contains("Кв."))
+                        if (para.IsShared && para.Definition.Name == nameApartmentNumber && para.AsString() != null && para.AsString().Contains("Кв."))
                         {
                             if (ApartmentsRooms.ContainsKey(para.AsString()))
                             {
@@ -257,6 +258,15 @@ namespace ClassLibrary1
                 }
             }
             return res;
+        }
+        public static UV Closest(UV p1, List<UV> arr)
+        {
+            double[] distance = new double[arr.Count];
+            for (int i = 0; i < distance.Length; i++)
+            {
+                distance[i] = p1.DistanceTo(arr[i]);
+            }
+            return arr[Array.IndexOf(distance, distance.Min())];
         }
         public static void LeftShift<T>(T[] array, int positions)
         {
