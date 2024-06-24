@@ -19,8 +19,7 @@ namespace ClassLibrary1
     using FlatRoomsMap = Dictionary<string, List<Room>>;
 
     [Transaction(TransactionMode.Manual)]
-
-    internal class ApartmentCalculator
+    public class ApartmentCalculator : IExternalCommand
     {
         private const string c_flatNumberParameterName = "Кврт.НомерКвартиры";
         private const string c_roomsCountParameterName = "Кврт.ЧислоКомнат";
