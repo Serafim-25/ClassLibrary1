@@ -46,9 +46,8 @@ namespace ClassLibrary1
             apartamentMaker.LongDescription = "Собрать помещения в квартиры и заполнить параметр \"Кврт.НомерКвартиры\"";
             apartamentMaker.LargeImage = ImageSourceFromIcon(Properties.Resources._2);
 
-            // !!! Задать правильное наименование класса !!!
             var calculatedParametersName = "CalcParam";
-            var calculatedParameters = (RibbonButton)ribbonPanel.AddItem(new PushButtonData(calculatedParametersName, calculatedParametersName, assemblyName, "ClassLibrary1.Test"));
+            var calculatedParameters = (RibbonButton)ribbonPanel.AddItem(new PushButtonData(calculatedParametersName, calculatedParametersName, assemblyName, "ClassLibrary1.ApartmentCalculator"));
             calculatedParameters.ToolTip = "Расчитать параметры квартирографии";
             calculatedParameters.LongDescription = "Рассчитать и заполнить параметры" +
                 "\"Кврт.ПлощадьКвартиры\", \"Кврт.ПлощадьКвартирыЖилая\", \"Кврт.ПлощадьКвартирыОбщая\", " +
