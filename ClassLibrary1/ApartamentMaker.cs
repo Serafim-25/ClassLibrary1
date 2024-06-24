@@ -7,6 +7,7 @@ using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using Pol = ClassLibrary2;
+using Autodesk.Revit.Exceptions;
 
 namespace ClassLibrary1
 {
@@ -23,7 +24,7 @@ namespace ClassLibrary1
             {
                 levelsRefs = uIDocument.Selection.PickObjects(ObjectType.Element, levelsPicker, "Выберите уровни");
             }
-            catch (OperationCanceledException e) { return Result.Failed; }
+            catch (Autodesk.Revit.Exceptions.OperationCanceledException e) { return Result.Failed; }
             List<Level> levels = new List<Level>();
             for (int j = 0; j < levelsRefs.Count; j++)
             {
