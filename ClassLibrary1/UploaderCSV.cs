@@ -57,9 +57,9 @@ namespace ClassLibrary1
                 .Where(it => it.SpatialElementType == SpatialElementType.Room)
                 .ToList();
 
-            // Создание словаря Квартирографии: <НомерКвартиры, список жилых помещений>
-            var roomsApartments = new Dictionary<string, List<SpatialElement>>();
-            
+            // Создание словаря Квартирографии: <int НомерКвартиры, список жилых помещений>
+            var roomsApartments = new Dictionary<int, List<SpatialElement>>();
+
             foreach (SpatialElement room in rooms)
             {
                 var parameterSet = room.Parameters;
@@ -70,14 +70,14 @@ namespace ClassLibrary1
                     {
                         foreach (Parameter paramApNum in parameterSet)
                         {
-                            if (paramApNum.Definition.Name == nameApartmentNumber && paramApNum.AsValueString().Contains("К"))
+                            if (paramApNum.Definition.Name == nameApartmentNumber)
                             {
-                                var valueApartmentNumbe = paramApNum.AsValueString();
-                                if (!roomsApartments.ContainsKey(valueApartmentNumbe))
+                                var valueApartmentNumber = int.Parse(paramApNum.AsValueString().Substring(3));
+                                if (!roomsApartments.ContainsKey(valueApartmentNumber))
                                 {
-                                    roomsApartments.Add(valueApartmentNumbe, new List<SpatialElement>());
+                                    roomsApartments.Add(valueApartmentNumber, new List<SpatialElement>());
                                 }
-                                roomsApartments[valueApartmentNumbe].Add(room);
+                                roomsApartments[valueApartmentNumber].Add(room);
                                 break;
                             }
                         }
@@ -85,6 +85,14 @@ namespace ClassLibrary1
                     }
                 }
             }
+
+            // Создание нового словаря Квартирографии: <int НомерКвартиры, список жилых помещений>
+            //var roomsApartments = new Dictionary<int, List<SpatialElement>>();
+            //foreach (string numApart in roomsApartmentsTemp.Keys)
+            //{
+            //    roomsApartments.Add(int.Parse(numApart.Substring(3), roomsApartmentsTemp[numApart]);
+            //}
+
 
             // Сортировка словаря Квартирографии
             roomsApartments = roomsApartments.OrderBy(it => it.Key).ToDictionary(it => it.Key, it => it.Value);
@@ -127,6 +135,7 @@ namespace ClassLibrary1
             {
                 { "Кухня", "Kitchen"},
                 { "Спальня1", "Room1"},
+                { "Гостиная", "Room1"},
                 { "Спальня2", "Room2"},
                 { "Спальня3", "Room3"},
                 { "Спальня4", "Room4"},
@@ -158,7 +167,6 @@ namespace ClassLibrary1
 
             var parametersNameNecessary = new List<string>()
                 {
-                    nameApartmentNumber,
                     nameVerticalAxes,
                     nameHorizontalAxes,
                     nameBuilding,
@@ -214,6 +222,7 @@ namespace ClassLibrary1
                         else if (areaCoefficient == "0,3") { roomStyle += "&K03"; }
                         else if (areaCoefficient == "1") { roomStyle += "&K1"; }
                     }
+                    var a = parametersDicTemp[nameApartmentNumber];
 
                     roomsDicTemp[roomsDictionary[roomStyle]] = roomArea;
                     //roomsDicTemp.Add(roomsDictionary[roomStyle], roomArea);
@@ -221,7 +230,7 @@ namespace ClassLibrary1
 
                 apartments.Add(new ApartmentCSV
                 {
-                    ApartmentNumber = parametersDicTemp[nameApartmentNumber],
+                    ApartmentNumber = int.Parse(parametersDicTemp[nameApartmentNumber].Substring(3)),
                     VerticalAxes = parametersDicTemp[nameVerticalAxes],
                     HorizontalAxes = parametersDicTemp[nameHorizontalAxes],
                     Building = parametersDicTemp[nameBuilding],
@@ -290,7 +299,7 @@ namespace ClassLibrary1
     public class ApartmentCSV
     {
         [Name("№ квартиры")]
-        public string ApartmentNumber { get; set; }
+        public int ApartmentNumber { get; set; }
 
         [Name("Оси верт.")]
         public string VerticalAxes { get; set; }
