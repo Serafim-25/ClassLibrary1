@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Xml.Linq;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.Creation;
@@ -44,34 +45,42 @@ namespace ClassLibrary1
 
             string nameRoomType = "Кврт.ТипПомещения";
 
-            var rooms = new FilteredElementCollector(doc)
-                .OfClass(typeof(SpatialElement)).Cast<SpatialElement>()
-                .Where(it => it.SpatialElementType == SpatialElementType.Room)
-                .Cast<Room>()
+            var levels = new FilteredElementCollector(doc)
+                .OfCategory(BuiltInCategory.OST_Levels)
+                .WhereElementIsNotElementType()
+                .Cast<Level>()
+                .OrderBy(lvl => lvl.Elevation)
+                .Where(lvl => lvl.Elevation >= 2)
                 .ToList();
 
-            // Дастаем спецификацию с ключем для помещений, а именно с ключом "Стиль помещений"
-            var viewKeySchedule = new FilteredElementCollector(doc)
-                .OfClass(typeof(ViewSchedule)).Cast<ViewSchedule>()
-                .Where(it => it.Name == "АР_Спецификация стилей помещений")
-                .First();
+            foreach (Level lvl in levels)
+            {
+                var rooms = new FilteredElementCollector(doc)
+                    .OfClass(typeof(SpatialElement)).Cast<SpatialElement>()
+                    .Where(it => it.Level.Id.Equals(lvl.Id) && it.SpatialElementType == SpatialElementType.Room)
+                    .Cast<Room>()
+                    .ToList();
+
+                // Дастаем спецификацию с ключем для помещений, а именно с ключом "Стиль помещений"
+                var viewKeySchedule = new FilteredElementCollector(doc)
+                    .OfClass(typeof(ViewSchedule)).Cast<ViewSchedule>()
+                    .Where(it => it.Name == "АР_Спецификация стилей помещений")
+                    .First();
 
                 // Делаем список ID всех объектов, которые связаны со спецификацией
-            var listElementIds = viewKeySchedule.GetDependentElements(null).ToList();
+                var listElementIds = viewKeySchedule.GetDependentElements(null).ToList();
 
                 // Фильтруем список и оставляем только ID всех Element-ключей
-            var listKeyElementIds = listElementIds.Where(it => doc.GetElement(it).GetType() == typeof(Element)
-                && doc.GetElement(it).Name != "АР_Спецификация стилей помещений"
-                && doc.GetElement(it).Name != "")
-                .ToList();
+                var listKeyElementIds = listElementIds.Where(it => doc.GetElement(it).GetType() == typeof(Element)
+                    && doc.GetElement(it).Name != "АР_Спецификация стилей помещений"
+                    && doc.GetElement(it).Name != "")
+                    .ToList();
 
-            var dict = new Dictionary<string, ElementId>();
+                var dict = new Dictionary<string, ElementId>();
                 foreach (var id in listKeyElementIds)
                 {
                     dict.Add(doc.GetElement(id).Name, id);
                 }
-
-
 
                 using (Transaction transaction = new Transaction(doc))
                 {
@@ -173,6 +182,9 @@ namespace ClassLibrary1
                     }
                     transaction.Commit();
                 }
+            }
+
+            
 
             return Result.Succeeded;
         }
