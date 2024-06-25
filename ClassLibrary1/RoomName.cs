@@ -50,7 +50,7 @@ namespace ClassLibrary1
                 .WhereElementIsNotElementType()
                 .Cast<Level>()
                 .OrderBy(lvl => lvl.Elevation)
-                .Where(lvl => lvl.Elevation >= 3.5 || lvl.Elevation <= 42.7)
+                .Where(lvl => lvl.Elevation > 11.4 && lvl.Elevation < 141)
                 .ToList();
 
             foreach (Level lvl in levels)
