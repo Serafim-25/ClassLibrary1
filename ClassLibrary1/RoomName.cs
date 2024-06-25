@@ -91,7 +91,7 @@ namespace ClassLibrary1
                         var parameterSet = x.Parameters;
                         foreach (Parameter param in parameterSet)
                         {
-                            if (param.Definition.Name == nameRoomType && param.AsInteger() != 5)
+                            if (param.Definition.Name == nameRoomType && param.AsInteger() != 5 && param.AsInteger() != 4)
                             {
                                 //создаем список мебели в комнате и проверяем принадлежит ли она данной комнате
                                 BoundingBoxXYZ bb = x.get_BoundingBox(null);
