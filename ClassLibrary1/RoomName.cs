@@ -45,13 +45,26 @@ namespace ClassLibrary1
 
             string nameRoomType = "Кврт.ТипПомещения";
 
-            var levels = new FilteredElementCollector(doc)
-                .OfCategory(BuiltInCategory.OST_Levels)
-                .WhereElementIsNotElementType()
-                .Cast<Level>()
-                .OrderBy(lvl => lvl.Elevation)
-                .Where(lvl => lvl.Elevation > 11.4 && lvl.Elevation < 141)
-                .ToList();
+            LevelsPicker levelsPicker = new LevelsPicker();
+            IList<Reference> levelsRefs = new List<Reference>();
+            try
+            {
+                levelsRefs = uiDoc.Selection.PickObjects(ObjectType.Element, levelsPicker, "Выберите уровни");
+            }
+            catch (Autodesk.Revit.Exceptions.OperationCanceledException e) { return Result.Failed; }
+            List<Level> levels = new List<Level>();
+            for (int j = 0; j < levelsRefs.Count; j++)
+            {
+                levels.Add(doc.GetElement(levelsRefs[j]) as Level);
+            }
+
+            //var levels = new FilteredElementCollector(doc)
+            //    .OfCategory(BuiltInCategory.OST_Levels)
+            //    .WhereElementIsNotElementType()
+            //    .Cast<Level>()
+            //    .OrderBy(lvl => lvl.Elevation)
+            //    .Where(lvl => lvl.Elevation > 11.4 && lvl.Elevation < 141)
+            //    .ToList();
 
             foreach (Level lvl in levels)
             {
