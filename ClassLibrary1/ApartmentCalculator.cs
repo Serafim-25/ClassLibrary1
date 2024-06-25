@@ -96,7 +96,13 @@ namespace ClassLibrary1
             {
                 if (roomPredicate(room))
                 {
-                    sumArea += room.Area;
+                    int roomType = room.LookupParameter(c_roomsTypeParameterName).AsInteger();
+                    if (roomType == 3)
+                        sumArea += room.Area * 0.5;
+                    else
+                        sumArea += room.Area;
+
+
                 }
             }
             return sumArea;
@@ -253,7 +259,7 @@ namespace ClassLibrary1
                 bool isEuro = false; // Это евро?
                 foreach (Room room in rooms)
                 {
-                    if ((room.Area * 0.092903 > 15) && FlatLivingAreaPredicate(room))
+                    if ((room.Area * 0.092903 > 15.02) && FlatLivingAreaPredicate(room)) // По ДУШНИЛЬНОМУ предпочтению Загороднего Серафима считаем евро от 15,02!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     {
                         isEuro = true;
                         break;
