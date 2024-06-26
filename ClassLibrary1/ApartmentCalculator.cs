@@ -256,16 +256,15 @@ namespace ClassLibrary1
 
 
 
-                bool isEuro = false; // Это евро?
-                foreach (Room room in rooms)
-                {
-                    if ((room.Area * 0.092903 > 15.02) && FlatLivingAreaPredicate(room)) // По ДУШНИЛЬНОМУ предпочтению Загороднего Серафима считаем евро от 15,02!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                    {
-                        isEuro = true;
-                        break;
-                    }
-                }
-                bool isStudio = rooms.Count(FlatLivingAreaPredicate) == 1; // Это студия?
+                // Нашли кухню
+                Room kitchen = rooms.Find(
+                    (Room room) => {
+                        string name = room.LookupParameter(c_RoomNameParameterName).AsValueString();
+                        return name == "Кухня";
+                    });
+
+                bool isStudio = kitchen.Area * 0.092903 < 8; ; // Это студия?
+                bool isEuro = kitchen.Area * 0.092903 > 14; // Это евро?
 
                 // Присваиваем индекс в зависимости от двух флагов (isStudio, isEuro)
                 foreach (Room room in rooms)
