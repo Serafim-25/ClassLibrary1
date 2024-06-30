@@ -120,9 +120,9 @@ namespace ClassLibrary1
 
                 // Рассчитываем параметры по списку всех помещений в квартире
                 int roomsCount = rooms.Count(FlatLivingAreaPredicate);
-                double area = SumArea(rooms, FlatAreaPredicate);
-                double livingArea = SumArea(rooms, FlatLivingAreaPredicate);
-                double totalArea = SumArea(rooms, FlatTotalAreaPredicate);
+                double area = Math.Round(SumArea(rooms, FlatAreaPredicate),1);
+                double livingArea = Math.Round(SumArea(rooms, FlatLivingAreaPredicate),1);
+                double totalArea = Math.Round(SumArea(rooms, FlatTotalAreaPredicate),1);
 
                 // Транзакция для того, чтобы поменять параметры
                 using (Transaction t = new Transaction(doc, "Add parameters"))
@@ -262,7 +262,10 @@ namespace ClassLibrary1
                         string name = room.LookupParameter(c_RoomNameParameterName).AsValueString();
                         return name == "Кухня";
                     });
-
+                if (kitchen == null)
+                {
+                    continue;
+                }
                 bool isStudio = kitchen.Area * 0.092903 < 8; ; // Это студия?
                 bool isEuro = kitchen.Area * 0.092903 > 14; // Это евро?
 
