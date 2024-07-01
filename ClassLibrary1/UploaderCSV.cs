@@ -15,6 +15,7 @@ using Autodesk.Revit.DB.Architecture;
 using System.IO;
 using Autodesk.Revit.Creation;
 using System.Xml.Linq;
+using System.IO.Pipes;
 
 namespace ClassLibrary1
 {
@@ -28,7 +29,6 @@ namespace ClassLibrary1
             var uiDoc = commandData.Application.ActiveUIDocument;
             var doc = uiDoc.Document;
 
-            double factorConversionFootSqToMeterSq = 0.092903;
             string nameAppointmentRoom = "Назначение";
             string valueAppointmentRoomLiving = "Жилое помещение";
             string nameApartmentNumber = "Кврт.НомерКвартиры";
@@ -167,6 +167,7 @@ namespace ClassLibrary1
 
             var parametersNameNecessary = new List<string>()
                 {
+                    nameApartmentNumber,
                     nameVerticalAxes,
                     nameHorizontalAxes,
                     nameBuilding,
@@ -179,10 +180,12 @@ namespace ClassLibrary1
                     nameTotalArea,
                     nameReducedArea
                 };
+
             foreach (List<SpatialElement> roomsApart in roomsApartments.Values)
             {
-                var parameterSetFirstRoom = roomsApart[0].Parameters;               
                 var parametersDicTemp = new Dictionary<string, string>();
+                
+                var parameterSetFirstRoom = roomsApart[0].Parameters;               
                 foreach (string paramName in parametersNameNecessary) 
                 { 
                     foreach (Parameter param in parameterSetFirstRoom)
@@ -201,7 +204,6 @@ namespace ClassLibrary1
                     roomsDicTemp.Add(room, "0");
                 }
 
-                //var roomsDicTemp = new Dictionary<string, string>();
                 foreach (SpatialElement room in roomsApart)
                 {
                     var parameterSet = room.Parameters;
@@ -222,10 +224,8 @@ namespace ClassLibrary1
                         else if (areaCoefficient == "0,3") { roomStyle += "&K03"; }
                         else if (areaCoefficient == "1") { roomStyle += "&K1"; }
                     }
-                    var a = parametersDicTemp[nameApartmentNumber];
 
                     roomsDicTemp[roomsDictionary[roomStyle]] = roomArea;
-                    //roomsDicTemp.Add(roomsDictionary[roomStyle], roomArea);
                 }
 
                 apartments.Add(new ApartmentCSV
@@ -282,15 +282,17 @@ namespace ClassLibrary1
             var nameDirDoc = Path.GetDirectoryName(fullNamePathDoc);
             var nameDocRvt = fullNamePathDoc.Replace(nameDirDoc + "\\", "");
             var nameDoc = nameDocRvt.Replace(".rvt", "");
-            var writer = new StreamWriter(nameDirDoc + "\\Квартирография_" + nameDoc + ".csv");
-            var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
 
-            csv.WriteHeader<ApartmentCSV>();
-            csv.NextRecord();
-            foreach (var apartment in apartments)
+            using (var writer = new StreamWriter(nameDirDoc + "\\Квартирография_" + nameDoc + ".csv"))
             {
-                csv.WriteRecord(apartment);
+                var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
+                csv.WriteHeader<ApartmentCSV>();
                 csv.NextRecord();
+                for (int i = 0; i < apartments.Count(); i++)
+                {
+                    csv.WriteRecord(apartments[i]);
+                    csv.NextRecord();
+                }
             }
 
             return Result.Succeeded;
