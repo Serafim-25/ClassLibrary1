@@ -108,9 +108,7 @@
     <Compile Include="ApartamentMaker.cs" />
     <Compile Include="ApartmentCalculator.cs" />
     <Compile Include="ApartmentNumberer.cs" />
-    <Compile Include="Class1.cs" />
     <Compile Include="Cleaner.cs" />
-    <Compile Include="ElementFilterForCleaner.cs" />
     <Compile Include="nUV.cs" />
     <Compile Include="LevelsPicker.cs" />
     <Compile Include="PluginApp.cs" />
@@ -121,9 +119,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="RoomName.cs" />
-    <Compile Include="RoomPlacerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Test.cs" />
     <Compile Include="UploaderCSV.cs" />
   </ItemGroup>
   <ItemGroup>
