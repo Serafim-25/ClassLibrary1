@@ -38,7 +38,6 @@ namespace ClassLibrary1
             string nameNumberOfRooms = "Кврт.ЧислоКомнат";
             string nameType = "Кврт.ИндексПомещения";
             string nameAreaCoefficient = "Кврт.КоэффициентПлощади";
-            string nameRoomType = "Кврт.ТипПомещения";
             string nameRoomStyle = "Стиль помещений";
 
             // !!! Подумать про них !!!
